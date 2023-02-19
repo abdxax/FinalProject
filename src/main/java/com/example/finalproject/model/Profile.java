@@ -19,7 +19,7 @@ public class Profile {
     private String name;
     private String phone;
 
-    private Integer capcity;
+
     @OneToOne
     @MapsId
     @JsonIgnore

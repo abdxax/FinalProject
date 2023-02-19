@@ -29,6 +29,8 @@ public class ServiceDetailes {
     private ServiceType serviceType;
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "serviceDetalies")
     private List<Storage> storages;
+    @OneToMany(cascade = CascadeType.ALL,mappedBy ="serviceDetailes" )
+    private List<Work> works;
 
 
 

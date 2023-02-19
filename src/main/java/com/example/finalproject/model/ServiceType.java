@@ -23,4 +23,6 @@ public class ServiceType {
     private List<Profile> profile;
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "serviceType")
     private List<ServiceDetailes> serviceDetailes;
+    @ManyToMany
+    private List<Freelancer> freelancer;
 }

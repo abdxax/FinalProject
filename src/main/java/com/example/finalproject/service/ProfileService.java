@@ -17,7 +17,11 @@ public class ProfileService {
     private final CityRepsotery cityRepsotery;
 
      public Profile getprofile(Integer id){
-         return profileRepository.findByIdEquals(id);
+         Profile profile=profileRepository.findByIdEquals(id);
+         if(profile==null){
+             return null;
+         }
+         return profile;
      }
 
      public void addProfile(MyUser user,ProfileDTO profileDTO){

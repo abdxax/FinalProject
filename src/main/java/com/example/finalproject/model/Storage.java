@@ -19,4 +19,8 @@ public class Storage {
     @JoinColumn(name = "serviceDetaliesId",referencedColumnName = "id")
     @JsonIgnore
     private ServiceDetailes serviceDetalies;
+    @ManyToOne
+    @JoinColumn(name = "workId",referencedColumnName = "id")
+    @JsonIgnore
+    private Work work;
 }

@@ -46,6 +46,14 @@ public class CityService {
         return true;
     }
 
+    public City getCity(Integer id){
+        City c=cityRepsotery.findByIdEquals(id);
+        if(c==null){
+            return null;
+        }
+        return c;
+    }
+
     public Boolean checkRole(MyUser user){
         if("admin".equalsIgnoreCase(user.getRole())){
             return true;
