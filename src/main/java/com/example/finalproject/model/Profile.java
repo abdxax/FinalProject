@@ -28,7 +28,12 @@ public class Profile {
     @JoinColumn(name = "cityId",referencedColumnName = "id")
     @JsonIgnore
     private City city;
-    @ManyToMany(cascade = CascadeType.ALL,mappedBy = "profile")
+    /*@ManyToMany(cascade = CascadeType.ALL,mappedBy = "profile")
     private List<ServiceType> types;
+
+     */
+    @OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Freelancer freelancer;
 
 }

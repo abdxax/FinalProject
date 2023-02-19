@@ -18,9 +18,7 @@ public class ServiceType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String serviceType;
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Profile> profile;
+
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "serviceType")
     private List<ServiceDetailes> serviceDetailes;
     @ManyToMany

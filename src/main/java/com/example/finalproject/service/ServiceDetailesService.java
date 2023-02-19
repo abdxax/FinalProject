@@ -31,7 +31,9 @@ public class ServiceDetailesService {
         if(u==null||serviceType==null||user.getId()!=detailesDTO.getUserId()){
             throw new ApiException("Error save something mistake");
         }
-        ServiceDetailes serviceDetailes=new ServiceDetailes(null,detailesDTO.getTitle(), detailesDTO.getDescription(),user,serviceType,null);
+       // ServiceDetailes serviceDetailes=new ServiceDetailes(null,detailesDTO.getTitle(), detailesDTO.getDescription(),user,serviceType,null);
+      //  ServiceDetailes serviceDetailes=new ServiceDetailes(null,detailesDTO.getTitle(),detailesDTO.getDescription(),user,serviceType,null,user.getProfile().getFreelancer());
+        ServiceDetailes serviceDetailes=new ServiceDetailes(null,detailesDTO.getTitle(),detailesDTO.getDescription(),user,serviceType,null);
         serviceDetailesRepository.save(serviceDetailes);
 
     }

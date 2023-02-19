@@ -31,8 +31,19 @@ public class MyUser implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn(name = "userId")
     private Profile profile;
+   /* @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
+    private List<ServiceDetailes> serviceDetailes;
+
+    */
+   @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
+   private List<Work> works;
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
     private List<ServiceDetailes> serviceDetailes;
+
+    private Boolean isAccountNonExpired;
+    private Boolean isAccountNonLocked;
+    private Boolean isCredentialsNonExpired;
+    private Boolean isEnabled;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

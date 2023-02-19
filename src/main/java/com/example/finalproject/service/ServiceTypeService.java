@@ -29,7 +29,7 @@ public class ServiceTypeService {
             return false;
         }
         serviceType.setId(s.getId());
-        serviceType.setProfile(s.getProfile());
+        //serviceType.setProfile(s.getProfile());
         serviceType.setServiceDetailes(s.getServiceDetailes());
         serviceTypeRepository.save(serviceType);
         return true;

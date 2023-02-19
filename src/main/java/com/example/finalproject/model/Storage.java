@@ -23,4 +23,8 @@ public class Storage {
     @JoinColumn(name = "workId",referencedColumnName = "id")
     @JsonIgnore
     private Work work;
+    @ManyToOne
+    @JoinColumn(name = "projectId",referencedColumnName = "id")
+    @JsonIgnore
+    private Project project;
 }

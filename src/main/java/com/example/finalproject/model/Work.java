@@ -27,6 +27,18 @@ public class Work {
     @JoinColumn(name = "serviceDetailesId",referencedColumnName = "id")
     @JsonIgnore
     private ServiceDetailes serviceDetailes;
+    /*@ManyToOne
+    @JoinColumn(name = "freelancerId",referencedColumnName = "id")
+    @JsonIgnore
+    private Freelancer freelancer;
+
+     */
+    @ManyToOne
+    @JoinColumn(name = "userId",referencedColumnName = "id")
+    @JsonIgnore
+    private MyUser user;
+
+
 
 
 

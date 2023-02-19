@@ -1,5 +1,6 @@
 package com.example.finalproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,9 +19,16 @@ public class Freelancer {
      private Integer id;
     private Integer capcity;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "freelancer")
     private List<ServiceType> serviceTypeList;
+    @OneToOne
+    @MapsId
+    @JsonIgnore
+    private Profile profile;
+   /* @OneToMany(cascade = CascadeType.ALL,mappedBy = "freelancer")
+    private List<Work> works;
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "freelancer")
+    private List<ServiceDetailes> serviceDetailes;
 
-   // private List<Work> works;
-   // private List<ServiceDetailes> serviceDetailes;
+    */
 }

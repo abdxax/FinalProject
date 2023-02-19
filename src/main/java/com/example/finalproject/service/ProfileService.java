@@ -29,7 +29,8 @@ public class ProfileService {
          if(city==null){
              throw new ApiException("The city id is not correct ");
          }
-         Profile profile=new Profile(null,profileDTO.getName(),profileDTO.getPhone(),profileDTO.getCapcity(),user,city,null);
+         Profile profile=new Profile(null,profileDTO.getName(),profileDTO.getPhone(),user,city,null);
+
          profileRepository.save(profile);
      }
 
@@ -40,7 +41,7 @@ public class ProfileService {
          }
          profile.setId(prof.getId());
          profile.setUser(prof.getUser());
-         profile.setTypes(prof.getTypes());
+        // profile.setTypes(prof.getTypes());
          profile.setCity(prof.getCity());
          profileRepository.save(profile);
          return true;
