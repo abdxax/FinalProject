@@ -1,6 +1,5 @@
 package com.example.finalproject.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
-@Table(name = "serviceType")
+@Table(name = "service_types")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,7 +19,11 @@ public class ServiceType {
     private String serviceType;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "serviceType")
-    private List<ServiceDetailes> serviceDetailes;
+    private List<ServiceDetails> serviceDetails;
     @ManyToMany
     private List<Freelancer> freelancer;
+
+    public ServiceType(String serviceType) {
+        this.serviceType = serviceType;
+    }
 }

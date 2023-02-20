@@ -28,19 +28,27 @@ public class MyUser implements UserDetails {
     @Column(unique = true)
     private String email;
     private String password;
-    @Pattern(regexp = "ADMIN||PROVIDER||USER")
+    @Pattern(regexp = "ADMIN||FREELANCER||USER")
     private String role;
     /* @OneToOne(cascade = CascadeType.ALL,mappedBy = "user")
      @PrimaryKeyJoinColumn
      private Profile profile;
     /* @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
-     private List<ServiceDetailes> serviceDetailes;
+     private List<ServiceDetails> serviceDetailes;
 
      */
-   @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
+
+    public MyUser(String name, String email, String password, String role) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
    private List<Work> works;
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
-    private List<ServiceDetailes> serviceDetailes;
+    private List<ServiceDetails> serviceDetailes;
 
     private Boolean isAccountNonExpired;
     private Boolean isAccountNonLocked;

@@ -6,9 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ProfileDTO {
-    private Integer idUser;
-    private Integer cityid;
-    private String name;
+    private Integer cityId;
     private String phone;
 
    // private Integer capcity;

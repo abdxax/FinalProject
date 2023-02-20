@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
-@Table(name = "serviceDetailes")
+@Table(name = "service_details")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ServiceDetailes {
+public class ServiceDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -31,7 +31,7 @@ public class ServiceDetailes {
     private List<Storage> storages;
 
     */
-    @OneToMany(cascade = CascadeType.ALL,mappedBy ="serviceDetailes" )
+    @OneToMany(cascade = CascadeType.ALL,mappedBy ="serviceDetails" )
     private List<Work> works;
    /* @ManyToOne
     @JoinColumn(name = "freelancerId",referencedColumnName = "id")

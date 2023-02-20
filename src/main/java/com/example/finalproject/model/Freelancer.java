@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 @Entity
-@Table(name = "freelancer")
+@Table(name = "freelancers_information")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,9 +17,10 @@ public class Freelancer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
      private Integer id;
-    private Integer capcity;
+    private Integer capacity;
 
     @ManyToMany(mappedBy = "freelancer")
+    @JsonIgnore
     private List<ServiceType> serviceTypeList;
     @OneToOne
     @MapsId
@@ -28,7 +29,7 @@ public class Freelancer {
    /* @OneToMany(cascade = CascadeType.ALL,mappedBy = "freelancer")
     private List<Work> works;
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "freelancer")
-    private List<ServiceDetailes> serviceDetailes;
+    private List<ServiceDetails> serviceDetailes;
 
     */
 }

@@ -5,10 +5,10 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ServiceDetailesDTO {
+public class ServiceDetailsDTO {
     private Integer userId;
     private Integer freelancerId;
     private String title;
     private String description;
-    private Integer serviecTypeId;
+    private Integer serviceTypeId;
 }

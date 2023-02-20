@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
-@Table(name = "work")
+@Table(name = "works")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -19,14 +19,12 @@ public class Work {
     private Integer id;
     private String title;
     private String description;
-    private String start;
-    private String end;
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "work")
     private List<Storage> storageList;
     @ManyToOne
-    @JoinColumn(name = "serviceDetailesId",referencedColumnName = "id")
+    @JoinColumn(name = "serviceDetailsId",referencedColumnName = "id")
     @JsonIgnore
-    private ServiceDetailes serviceDetailes;
+    private ServiceDetails serviceDetails;
     /*@ManyToOne
     @JoinColumn(name = "freelancerId",referencedColumnName = "id")
     @JsonIgnore
