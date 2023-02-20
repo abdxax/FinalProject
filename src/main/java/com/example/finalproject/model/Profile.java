@@ -15,15 +15,20 @@ import java.util.List;
 @Table(name = "profile")
 public class Profile {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private String phone;
 
 
-    @OneToOne
+    /*@OneToOne
     @MapsId
     @JsonIgnore
     private MyUser user;
+
+     */
+
+    private Integer userId;
     @ManyToOne
     @JoinColumn(name = "cityId",referencedColumnName = "id")
     @JsonIgnore
@@ -32,8 +37,8 @@ public class Profile {
     private List<ServiceType> types;
 
      */
-    @OneToOne(cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
+        @OneToOne(cascade = CascadeType.ALL,mappedBy = "profile")
+        @PrimaryKeyJoinColumn
     private Freelancer freelancer;
 
 }

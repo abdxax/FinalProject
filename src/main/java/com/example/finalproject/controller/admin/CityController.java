@@ -27,7 +27,7 @@ public class CityController {
        return ResponseEntity.status(200).body("Added Done ");
     }
     @PutMapping("/update/{id}")
-    public ResponseEntity update(@PathVariable Integer id,@AuthenticationPrincipal MyUser user,City city){
+    public ResponseEntity update(@PathVariable Integer id,@AuthenticationPrincipal MyUser user,@RequestBody @Valid City city){
         Boolean res=cityService.update(user,id,city);
         if(!res){
             return ResponseEntity.status(200).body("has error in something");

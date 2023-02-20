@@ -36,6 +36,20 @@ public class ProfileController {
         profileService.addProfile(user,profileDTO);
         return ResponseEntity.status(200).body("The Profile Added done");
     }
+@PutMapping("/update/{id}")
+    public ResponseEntity update(@PathVariable Integer id,@AuthenticationPrincipal MyUser user,@RequestBody @Valid ProfileDTO profileDTO){
+        Profile profile=profileService.getprofile(profileDTO.getIdUser());
+        City city=cityService.getCity(profileDTO.getCityid());
+        if(profile==null||city==null||profile.getUserId()!=user.getId()){
+            return ResponseEntity.status(400).body("The Id error");
+        }
+
+        profile.setCity(city);
+        profile.setName(profileDTO.getName());
+        profile.setPhone(profileDTO.getPhone());
+        profileService.update(user,id,profile);
+        return ResponseEntity.status(200).body("Update Done");
+    }
 
 
 }

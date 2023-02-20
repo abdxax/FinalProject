@@ -19,9 +19,9 @@ public class CityService {
     }
 
     public void addCity(MyUser user,City city){
-        if(user.getRole().equalsIgnoreCase("admin")){
+        if(user.getRole().equalsIgnoreCase("ADMIN")){
             cityRepsotery.save(city);
-
+              return;
         }
         throw new ApiException("The user is not admin premmision");
     }
@@ -33,6 +33,7 @@ public class CityService {
      }
 
      city.setId(c.getId());
+     city.setProfiles(c.getProfiles());
      cityRepsotery.save(city);
      return true;
     }

@@ -7,9 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -28,13 +30,13 @@ public class MyUser implements UserDetails {
     private String password;
     @Pattern(regexp = "ADMIN||PROVIDER||USER")
     private String role;
-    @OneToOne(cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn(name = "userId")
-    private Profile profile;
-   /* @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
-    private List<ServiceDetailes> serviceDetailes;
+    /* @OneToOne(cascade = CascadeType.ALL,mappedBy = "user")
+     @PrimaryKeyJoinColumn
+     private Profile profile;
+    /* @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
+     private List<ServiceDetailes> serviceDetailes;
 
-    */
+     */
    @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
    private List<Work> works;
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
@@ -47,7 +49,7 @@ public class MyUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return Collections.singleton(new SimpleGrantedAuthority(this.role));
     }
 
     @Override

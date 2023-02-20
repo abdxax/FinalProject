@@ -11,6 +11,6 @@ public class ProfileDTO {
     private String name;
     private String phone;
 
-    private Integer capcity;
+   // private Integer capcity;
 
 }
