@@ -11,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/user/freelancer")
@@ -22,11 +19,27 @@ import org.springframework.web.bind.annotation.RestController;
 public class FreelancerController {
     private final FreelancerService freelancerService;
     private final ProfileService profileService;
+     @GetMapping("/getFreelancer")
+    public ResponseEntity<Freelancer> getFreelancer(@AuthenticationPrincipal MyUser user){
+        Freelancer f=freelancerService.getFreelancer(user.getId());
+        if(f==null){
+
+        }
+        return ResponseEntity.status(200).body(f);
+    }
 @PostMapping("/addFreelancer")
     public ResponseEntity addFreelancer(@AuthenticationPrincipal MyUser user, @RequestBody @Valid FreelancerDTO freelancerDTO){
-       // Freelancer freelancer=freelancerRepostioty.
+        //Freelancer freelancer=freelancerRepostioty.
         freelancerService.addFreelancer(user,freelancerDTO);
         return ResponseEntity.status(200).body("Added");
 
+    }
+  @PutMapping("/update/{id}")
+    public ResponseEntity update(@PathVariable Integer id, @AuthenticationPrincipal MyUser user,@RequestBody @Valid FreelancerDTO freelancerDTO){
+      Boolean res=freelancerService.update(id,user,freelancerDTO);
+      if(!res){
+          ResponseEntity.status(400).body("ERROR");
+      }
+      return ResponseEntity.status(200).body("Update done");
     }
 }
