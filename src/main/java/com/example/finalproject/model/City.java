@@ -19,4 +19,8 @@ public class City {
     private String cityName;
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "city")
     private List<Profile> profiles;
+
+    public City(String cityName) {
+        this.cityName = cityName;
+    }
 }

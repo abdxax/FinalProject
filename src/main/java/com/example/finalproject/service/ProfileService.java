@@ -28,32 +28,30 @@ public class ProfileService {
      }
 
      public void addProfile(MyUser user,ProfileDTO profileDTO){
-         City city=cityRepsotery.findByIdEquals(profileDTO.getCityid());
-         MyUser user1=authRepstory.findByIdEquals(profileDTO.getIdUser());
+         City city=cityRepsotery.findByIdEquals(profileDTO.getCityId());
+         MyUser user1=authRepstory.findByIdEquals(user.getId());
          if(city==null){
-             throw new ApiException("The city id is not correct ");
+             throw new ApiException("The city id is not correct ",404);
          }
-       //  Profile profile=new Profile(null,profileDTO.getName(),profileDTO.getPhone(),user,city,null);
-           Profile profile=new Profile(null,profileDTO.getName(),profileDTO.getPhone(),user.getId(),city,null);
+//         Profile profile=new Profile(null,profileDTO.getName(),profileDTO.getPhone(),user,city,null);
+           Profile profile=new Profile(null,profileDTO.getPhone(),user1,city,null);
          profileRepository.save(profile);
      }
 
-     public Boolean update(MyUser user,Integer id,Profile profile){
-         Profile prof=profileRepository.findByIdEquals(id);
-         if(prof==null||prof.getUserId()!=user.getId()){
+     public Boolean update(MyUser user,Profile profile){
+         Profile prof=profileRepository.findByIdEquals(user.getId());
+         if(prof==null){
              return false;
          }
-         profile.setId(prof.getId());
-         profile.setUserId(prof.getUserId());
-        // profile.setTypes(prof.getTypes());
-         profile.setCity(prof.getCity());
-         profileRepository.save(profile);
+         prof.setCity(profile.getCity());
+         prof.setPhone(profile.getPhone());
+         profileRepository.save(prof);
          return true;
      }
 
     public Boolean delete(MyUser user,Integer id){
         Profile prof=profileRepository.findByIdEquals(id);
-        if(prof==null||prof.getUserId()!=user.getId()){
+        if(prof==null||prof.getUser().getId()!=user.getId()){
             return false;
         }
         profileRepository.delete(prof);

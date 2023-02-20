@@ -2,47 +2,60 @@ package com.example.finalproject.service;
 
 import com.example.finalproject.dto.FreelancerDTO;
 import com.example.finalproject.handling.ApiException;
-import com.example.finalproject.model.Freelancer;
-import com.example.finalproject.model.MyUser;
-import com.example.finalproject.model.Profile;
-import com.example.finalproject.model.Project;
+import com.example.finalproject.model.*;
 import com.example.finalproject.repestory.FreelancerRepostioty;
 import com.example.finalproject.repestory.ProfileRepository;
+import com.example.finalproject.repestory.ServiceTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class FreelancerService {
     private final FreelancerRepostioty freelancerRepostioty;
     private final ProfileRepository profileRepository;
+    private final ServiceTypeRepository serviceTypeRepository;
     public void addFreelancer(MyUser user, FreelancerDTO freelancerDTO){
-        Profile profile=profileRepository.findByIdEquals(freelancerDTO.getProfileId());
-        Freelancer f=freelancerRepostioty.findByProfile(profile);
-        if(profile==null||profile.getUserId()!=user.getId()||f!=null){
-            throw new ApiException("Some Thing Error");
+        Profile profile=profileRepository.findByIdEquals(user.getId());
+        if(profile==null){
+            throw new ApiException("Profile not found. Complete profile first.",404);
         }
-        Freelancer freelancer=new Freelancer(null,freelancerDTO.getCapcity(),freelancerDTO.getServiceTypeList(),profile);
+        Freelancer olfFreelancer = freelancerRepostioty.findByIdEquals(user.getId());
+        if(olfFreelancer!=null){
+            throw new ApiException("You already have freelancer profile!",400);
+        }
+        List<ServiceType> serviceTypeList = serviceTypeRepository.findAllById(freelancerDTO.getServiceTypeList());
+
+        Freelancer freelancer=new Freelancer(null,freelancerDTO.getCapacity(),serviceTypeList,profile);
         freelancerRepostioty.save(freelancer);
+        for (ServiceType s: serviceTypeList){
+            s.getFreelancer().add(freelancer);
+            serviceTypeRepository.save(s);
+        }
 
     }
 
-    public Boolean update(Integer id,MyUser user,FreelancerDTO freelancer){
-        Freelancer f=freelancerRepostioty.findByIdEquals(id);
-        Profile profile=profileRepository.findByIdEquals(f.getProfile().getId());
-        if(f==null||profile==null||profile.getUserId()!=user.getId()){
-            return false;
+    public Boolean update(MyUser user,FreelancerDTO freelancer){
+        Freelancer oldFreelancer=freelancerRepostioty.findByIdEquals(user.getId());
+        if(oldFreelancer==null){
+            throw new ApiException("Freelancer information not found",404);
         }
-        f.setCapcity(freelancer.getCapcity());
-        f.setServiceTypeList(freelancer.getServiceTypeList());
-        freelancerRepostioty.save(f);
+
+        List<ServiceType> serviceTypeList = serviceTypeRepository.findAllById(freelancer.getServiceTypeList());
+
+        oldFreelancer.setCapacity(freelancer.getCapacity());
+        oldFreelancer.setServiceTypeList(serviceTypeList);
+        freelancerRepostioty.save(oldFreelancer);
+
         return true;
     }
 
     public Freelancer getFreelancer(Integer id){
         Freelancer f= freelancerRepostioty.findByIdEquals(id);
         if(f==null){
-            return  null;
+            throw new ApiException("Freelancer information not found. complete it.",404);
         }
         return f;
 

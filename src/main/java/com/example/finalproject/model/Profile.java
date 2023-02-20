@@ -12,23 +12,22 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "profile")
+@Table(name = "profiles")
 public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String name;
     private String phone;
 
 
-    /*@OneToOne
+    @OneToOne
     @MapsId
     @JsonIgnore
     private MyUser user;
 
-     */
 
-    private Integer userId;
+
+//    private Integer userId;
     @ManyToOne
     @JoinColumn(name = "cityId",referencedColumnName = "id")
     @JsonIgnore
@@ -39,6 +38,7 @@ public class Profile {
      */
         @OneToOne(cascade = CascadeType.ALL,mappedBy = "profile")
         @PrimaryKeyJoinColumn
+        @JsonIgnore
     private Freelancer freelancer;
 
 }

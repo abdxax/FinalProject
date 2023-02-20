@@ -1,7 +1,6 @@
 package com.example.finalproject.controller;
 
 import com.example.finalproject.model.MyUser;
-import com.example.finalproject.service.MyUserDetaiLsService;
 import com.example.finalproject.service.MyUserSerivce;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

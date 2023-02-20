@@ -1,6 +1,7 @@
 package com.example.finalproject.controller.user;
 
 import com.example.finalproject.dto.FreelancerDTO;
+import com.example.finalproject.handling.ApiException;
 import com.example.finalproject.model.Freelancer;
 import com.example.finalproject.model.MyUser;
 import com.example.finalproject.repestory.FreelancerRepostioty;
@@ -21,11 +22,8 @@ public class FreelancerController {
     private final ProfileService profileService;
      @GetMapping("/getFreelancer")
     public ResponseEntity<Freelancer> getFreelancer(@AuthenticationPrincipal MyUser user){
-        Freelancer f=freelancerService.getFreelancer(user.getId());
-        if(f==null){
-
-        }
-        return ResponseEntity.status(200).body(f);
+        Freelancer freelancer=freelancerService.getFreelancer(user.getId());
+        return ResponseEntity.status(200).body(freelancer);
     }
 @PostMapping("/addFreelancer")
     public ResponseEntity addFreelancer(@AuthenticationPrincipal MyUser user, @RequestBody @Valid FreelancerDTO freelancerDTO){
@@ -35,8 +33,8 @@ public class FreelancerController {
 
     }
   @PutMapping("/update/{id}")
-    public ResponseEntity update(@PathVariable Integer id, @AuthenticationPrincipal MyUser user,@RequestBody @Valid FreelancerDTO freelancerDTO){
-      Boolean res=freelancerService.update(id,user,freelancerDTO);
+    public ResponseEntity update(@AuthenticationPrincipal MyUser user,@RequestBody @Valid FreelancerDTO freelancerDTO){
+      Boolean res=freelancerService.update(user,freelancerDTO);
       if(!res){
           ResponseEntity.status(400).body("ERROR");
       }

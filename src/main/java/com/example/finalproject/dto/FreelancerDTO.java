@@ -10,8 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class FreelancerDTO {
-    private Integer profileId;
-    private Integer capcity;
+    private Integer capacity;
 
-    private List<ServiceType> serviceTypeList;
+    private List<Integer> serviceTypeList;
 }

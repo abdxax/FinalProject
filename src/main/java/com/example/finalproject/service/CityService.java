@@ -23,7 +23,7 @@ public class CityService {
             cityRepsotery.save(city);
               return;
         }
-        throw new ApiException("The user is not admin premmision");
+        throw new ApiException("The user is not admin permission",403);
     }
 
     public Boolean update(MyUser user,Integer id,City city){

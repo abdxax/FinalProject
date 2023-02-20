@@ -6,12 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MyUserDetaiLsService implements UserDetailsService {
+public class MyUserDetailsService implements UserDetailsService {
     private final AuthRepstory authRepstory;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

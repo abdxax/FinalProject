@@ -14,11 +14,7 @@ public class Storage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String fileType;
-    private String pathFile;
-    @ManyToOne
-    @JoinColumn(name = "serviceDetaliesId",referencedColumnName = "id")
-    @JsonIgnore
-    private ServiceDetailes serviceDetalies;
+    private String filePath;
     @ManyToOne
     @JoinColumn(name = "workId",referencedColumnName = "id")
     @JsonIgnore
