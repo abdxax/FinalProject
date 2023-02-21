@@ -1,7 +1,7 @@
 package com.example.finalproject.controller;
 
 import com.example.finalproject.model.MyUser;
-import com.example.finalproject.service.MyUserSerivce;
+import com.example.finalproject.service.MyUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200/")
 public class AuthController {
-    private final MyUserSerivce myUserSerivce;
+    private final MyUserService myUserService;
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid MyUser user){
-        myUserSerivce.register(user);
+        myUserService.register(user);
         return ResponseEntity.status(200).body("Register is done");
     }
     @PostMapping("/login")

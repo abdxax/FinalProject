@@ -1,5 +1,6 @@
 package com.example.finalproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class City {
     private Integer id;
     private String cityName;
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "city")
+    @JsonIgnore
     private List<Profile> profiles;
 
     public City(String cityName) {

@@ -3,6 +3,7 @@ package com.example.finalproject.service;
 import com.example.finalproject.dto.FreelancerDTO;
 import com.example.finalproject.handling.ApiException;
 import com.example.finalproject.model.*;
+import com.example.finalproject.repestory.AuthRepository;
 import com.example.finalproject.repestory.FreelancerRepostioty;
 import com.example.finalproject.repestory.ProfileRepository;
 import com.example.finalproject.repestory.ServiceTypeRepository;
@@ -17,6 +18,7 @@ public class FreelancerService {
     private final FreelancerRepostioty freelancerRepostioty;
     private final ProfileRepository profileRepository;
     private final ServiceTypeRepository serviceTypeRepository;
+    private final AuthRepository authRepository;
     public void addFreelancer(MyUser user, FreelancerDTO freelancerDTO){
         Profile profile=profileRepository.findByIdEquals(user.getId());
         if(profile==null){
@@ -25,6 +27,11 @@ public class FreelancerService {
         Freelancer olfFreelancer = freelancerRepostioty.findByIdEquals(user.getId());
         if(olfFreelancer!=null){
             throw new ApiException("You already have freelancer profile!",400);
+        }
+        MyUser myUser = authRepository.findByIdEquals(user.getId());
+        if(myUser.getRole().equals("USER")){
+            myUser.setRole("FREELANCER");
+            authRepository.save(myUser);
         }
         List<ServiceType> serviceTypeList = serviceTypeRepository.findAllById(freelancerDTO.getServiceTypeList());
 

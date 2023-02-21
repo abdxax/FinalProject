@@ -30,15 +30,13 @@ public class Profile {
 //    private Integer userId;
     @ManyToOne
     @JoinColumn(name = "cityId",referencedColumnName = "id")
-    @JsonIgnore
     private City city;
     /*@ManyToMany(cascade = CascadeType.ALL,mappedBy = "profile")
     private List<ServiceType> types;
 
      */
-        @OneToOne(cascade = CascadeType.ALL,mappedBy = "profile")
-        @PrimaryKeyJoinColumn
-        @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL,mappedBy = "profile")
+    @PrimaryKeyJoinColumn
     private Freelancer freelancer;
 
 }

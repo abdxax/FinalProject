@@ -38,6 +38,15 @@ public class MyUser implements UserDetails {
 
      */
 
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
+    private List<Work> works;
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
+    private List<ServiceDetails> serviceDetails;
+
+    @OneToOne(cascade = CascadeType.REMOVE)
+    @PrimaryKeyJoinColumn
+    private Profile profile;
+
     public MyUser(String name, String email, String password, String role) {
         this.name = name;
         this.email = email;
@@ -45,10 +54,7 @@ public class MyUser implements UserDetails {
         this.role = role;
     }
 
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
-   private List<Work> works;
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
-    private List<ServiceDetails> serviceDetailes;
+
 
     private Boolean isAccountNonExpired;
     private Boolean isAccountNonLocked;

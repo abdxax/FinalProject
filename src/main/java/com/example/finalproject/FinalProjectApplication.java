@@ -3,7 +3,7 @@ package com.example.finalproject;
 import com.example.finalproject.model.City;
 import com.example.finalproject.model.MyUser;
 import com.example.finalproject.model.ServiceType;
-import com.example.finalproject.repestory.AuthRepstory;
+import com.example.finalproject.repestory.AuthRepository;
 import com.example.finalproject.repestory.CityRepsotery;
 import com.example.finalproject.repestory.ServiceTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class FinalProjectApplication {
     ServiceTypeRepository serviceTypeRepository;
 
     @Autowired
-    AuthRepstory authRepstory;
+    AuthRepository authRepository;
     @Bean
     public void addCities(){
         if(cityRepsotery.findAll().size()==0){
@@ -60,15 +60,15 @@ public class FinalProjectApplication {
 
     @Bean
     public void addDefaultUsers(){
-        if(authRepstory.findAll().size()==0){
+        if(authRepository.findAll().size()==0){
             MyUser myUser1 = new MyUser("Abdullah","abodi.imz@gmail.com",new BCryptPasswordEncoder().encode("Asd@12345") ,"ADMIN");
             MyUser myUser2 = new MyUser("Abdulrahman","jarallah@gmail.com",new BCryptPasswordEncoder().encode("Asd@12345") ,"ADMIN");
             MyUser myUser3 = new MyUser("Freelancer","freelancer@gmail.com",new BCryptPasswordEncoder().encode("Asd@12345") ,"FREELANCER");
             MyUser myUser4 = new MyUser("user","user@gmail.com",new BCryptPasswordEncoder().encode("Asd@12345") ,"USER");
-            authRepstory.save(myUser1);
-            authRepstory.save(myUser2);
-            authRepstory.save(myUser3);
-            authRepstory.save(myUser4);
+            authRepository.save(myUser1);
+            authRepository.save(myUser2);
+            authRepository.save(myUser3);
+            authRepository.save(myUser4);
         }
     }
 

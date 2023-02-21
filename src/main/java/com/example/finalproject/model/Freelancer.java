@@ -20,7 +20,6 @@ public class Freelancer {
     private Integer capacity;
 
     @ManyToMany(mappedBy = "freelancer")
-    @JsonIgnore
     private List<ServiceType> serviceTypeList;
     @OneToOne
     @MapsId

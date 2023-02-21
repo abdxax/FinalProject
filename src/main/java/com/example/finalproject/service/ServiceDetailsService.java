@@ -5,7 +5,7 @@ import com.example.finalproject.handling.ApiException;
 import com.example.finalproject.model.MyUser;
 import com.example.finalproject.model.ServiceDetails;
 import com.example.finalproject.model.ServiceType;
-import com.example.finalproject.repestory.AuthRepstory;
+import com.example.finalproject.repestory.AuthRepository;
 import com.example.finalproject.repestory.ServiceDetailsRepository;
 import com.example.finalproject.repestory.ServiceTypeRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,9 +15,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ServiceDetailesService {
+public class ServiceDetailsService {
     private final ServiceDetailsRepository serviceDetailsRepository;
-    private final AuthRepstory authRepstory;
+    private final AuthRepository authRepository;
     private final ServiceTypeRepository serviceTypeRepository;
 
     public List<ServiceDetails> serviceDetails(MyUser user){
@@ -25,31 +25,35 @@ public class ServiceDetailesService {
     }
 
     public void addServiceDetails(MyUser user, ServiceDetailsDTO detailsDTO){
-        MyUser u=authRepstory.findByIdEquals(detailsDTO.getUserId());
         ServiceType serviceType=serviceTypeRepository.findByIdEquals(detailsDTO.getServiceTypeId());
-        if(u==null||serviceType==null||user.getId()!=detailsDTO.getUserId()){
-            throw new ApiException("Error save something mistake",400);
+        MyUser authUser = authRepository.findByIdEquals(user.getId());
+        if(authUser.getProfile()==null){
+            throw new ApiException("Profile not found. complete your profile first.",404);
         }
-       // ServiceDetails serviceDetails=new ServiceDetails(null,detailesDTO.getTitle(), detailesDTO.getDescription(),user,serviceType,null);
-      //  ServiceDetails serviceDetails=new ServiceDetails(null,detailesDTO.getTitle(),detailesDTO.getDescription(),user,serviceType,null,user.getProfile().getFreelancer());
-        ServiceDetails serviceDetails =new ServiceDetails(null,detailsDTO.getTitle(),detailsDTO.getDescription(),user,serviceType,null);
+        if(authUser.getProfile().getFreelancer()==null){
+            throw new ApiException("Freelancer information not found. complete your freelancer information first.",404);
+        }
+        if(!authUser.getProfile().getFreelancer().getServiceTypeList().contains(serviceType)){
+            throw new ApiException("You did not attach the service details provided!", 400);
+        }
+        ServiceDetails serviceDetails =new ServiceDetails(null,detailsDTO.getDescription(),authUser,serviceType,null);
         serviceDetailsRepository.save(serviceDetails);
 
     }
 
     public Boolean update(Integer id, MyUser user, ServiceDetailsDTO serviceDetailsDTO){
-        ServiceDetails s= serviceDetailsRepository.findByIdEquals(id);
-
-        MyUser u=authRepstory.findByIdEquals(serviceDetailsDTO.getUserId());
-        ServiceType serviceType=serviceTypeRepository.findByIdEquals(serviceDetailsDTO.getServiceTypeId());
-
-        if(s==null||u==null||serviceType==null||s.getUser().getId()!=user.getId()){
-            return false;
-        }
-        s.setTitle(serviceDetailsDTO.getTitle());
-        s.setDescription(serviceDetailsDTO.getDescription());
-        serviceDetailsRepository.save(s);
-
+//        ServiceDetails s= serviceDetailsRepository.findByIdEquals(id);
+//
+//        MyUser u= authRepository.findByIdEquals(serviceDetailsDTO.getUserId());
+//        ServiceType serviceType=serviceTypeRepository.findByIdEquals(serviceDetailsDTO.getServiceTypeId());
+//
+//        if(s==null||u==null||serviceType==null||s.getUser().getId()!=user.getId()){
+//            return false;
+//        }
+//        s.setTitle(serviceDetailsDTO.getTitle());
+//        s.setDescription(serviceDetailsDTO.getDescription());
+//        serviceDetailsRepository.save(s);
+//
         return  true;
     }
 
