@@ -17,7 +17,6 @@ public class ServiceDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String title;
     private String description;
     @ManyToOne
     @JoinColumn(name = "userId",referencedColumnName = "id")
@@ -25,7 +24,6 @@ public class ServiceDetails {
     private MyUser user;
     @ManyToOne
     @JoinColumn(name = "serviceTypeId",referencedColumnName = "id")
-    @JsonIgnore
     private ServiceType serviceType;
    /* @OneToMany(cascade = CascadeType.ALL,mappedBy = "serviceDetalies")
     private List<Storage> storages;

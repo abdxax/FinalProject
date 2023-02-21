@@ -1,5 +1,6 @@
 package com.example.finalproject.controller.user;
 
+import com.example.finalproject.dto.WorkDTO;
 import com.example.finalproject.model.MyUser;
 import com.example.finalproject.model.Work;
 import com.example.finalproject.service.WorkService;
@@ -17,15 +18,14 @@ import java.util.List;
 public class WorkController {
     private final WorkService workService;
 
-    @PostMapping("/addWork")
-    public ResponseEntity addWork(@AuthenticationPrincipal MyUser user, @RequestBody @Valid Work work){
-        workService.addWork(user,work);
+    @PostMapping()
+    public ResponseEntity addWork(@AuthenticationPrincipal MyUser user, @RequestBody @Valid WorkDTO workDTO){
+        workService.addWork(user,workDTO);
         return ResponseEntity.status(200).body("The work is added");
     }
-    @GetMapping("/getWorks")
+    @GetMapping()
     public ResponseEntity<List<Work>> workList(@AuthenticationPrincipal MyUser user){
         List<Work> works=workService.userWork(user);
         return ResponseEntity.status(200).body(works);
-
     }
 }

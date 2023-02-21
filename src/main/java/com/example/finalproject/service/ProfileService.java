@@ -3,13 +3,13 @@ package com.example.finalproject.service;
 import com.example.finalproject.dto.ProfileDTO;
 import com.example.finalproject.handling.ApiException;
 import com.example.finalproject.model.City;
-import com.example.finalproject.model.Freelancer;
 import com.example.finalproject.model.MyUser;
 import com.example.finalproject.model.Profile;
-import com.example.finalproject.repestory.AuthRepstory;
+import com.example.finalproject.repestory.AuthRepository;
 import com.example.finalproject.repestory.CityRepsotery;
 import com.example.finalproject.repestory.ProfileRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,36 +17,47 @@ import org.springframework.stereotype.Service;
 public class ProfileService {
     private final ProfileRepository profileRepository;
     private final CityRepsotery cityRepsotery;
-    private final AuthRepstory authRepstory;
+    private final AuthRepository authRepository;
 
      public Profile getprofile(Integer id){
          Profile profile=profileRepository.findByIdEquals(id);
          if(profile==null){
-             return null;
+             throw new ApiException("Profile not fount. complete your profile.",404);
          }
          return profile;
      }
 
      public void addProfile(MyUser user,ProfileDTO profileDTO){
-         City city=cityRepsotery.findByIdEquals(profileDTO.getCityId());
-         MyUser user1=authRepstory.findByIdEquals(user.getId());
-         if(city==null){
-             throw new ApiException("The city id is not correct ",404);
+         MyUser authUser= authRepository.findByIdEquals(user.getId());
+         if(authUser.getProfile()!=null){
+             throw new ApiException("You already hava a profile.",400);
          }
-//         Profile profile=new Profile(null,profileDTO.getName(),profileDTO.getPhone(),user,city,null);
-           Profile profile=new Profile(null,profileDTO.getPhone(),user1,city,null);
+
+         City city=cityRepsotery.findByIdEquals(profileDTO.getCityId());
+         if(city==null){
+             throw new ApiException("City selected not found",404);
+         }
+         Profile profile=new Profile(null,profileDTO.getPhone(),authUser,city,null);
          profileRepository.save(profile);
      }
 
-     public Boolean update(MyUser user,Profile profile){
-         Profile prof=profileRepository.findByIdEquals(user.getId());
-         if(prof==null){
-             return false;
+     public void update(MyUser user,ProfileDTO profileDTO){
+         Profile oldProfile=profileRepository.findByIdEquals(user.getId());
+         if(oldProfile==null){
+             throw new ApiException("Profile not found. complete it",404);
          }
-         prof.setCity(profile.getCity());
-         prof.setPhone(profile.getPhone());
-         profileRepository.save(prof);
-         return true;
+
+         if(profileDTO.getCityId()>0) {
+             City city = cityRepsotery.findByIdEquals(profileDTO.getCityId());
+             if(city==null){
+                 throw new ApiException("City selected not found",404);
+             }
+             oldProfile.setCity(city);
+         }
+         if(profileDTO.getPhone()!=null){
+             oldProfile.setPhone(profileDTO.getPhone());
+         }
+         profileRepository.save(oldProfile);
      }
 
     public Boolean delete(MyUser user,Integer id){

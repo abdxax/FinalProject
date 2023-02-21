@@ -1,5 +1,6 @@
 package com.example.finalproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,8 +20,10 @@ public class ServiceType {
     private String serviceType;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "serviceType")
+    @JsonIgnore
     private List<ServiceDetails> serviceDetails;
     @ManyToMany
+    @JsonIgnore
     private List<Freelancer> freelancer;
 
     public ServiceType(String serviceType) {

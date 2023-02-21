@@ -24,29 +24,12 @@ public class ProfileController {
     }
     @PostMapping("/addprofile")
     public ResponseEntity addProfile(@AuthenticationPrincipal MyUser user,@RequestBody @Valid ProfileDTO profileDTO){
-        Profile userprofile=profileService.getprofile(user.getId());
-        City city=cityService.getCity(profileDTO.getCityId());
-        if(userprofile!=null){
-            return ResponseEntity.status(400).body("The user has profile already");
-        }
-        if(city==null){
-            return ResponseEntity.status(200).body("The id City id is not correct ");
-        }
-
         profileService.addProfile(user,profileDTO);
         return ResponseEntity.status(200).body("The Profile Added done");
     }
 @PutMapping("/update")
     public ResponseEntity update(@AuthenticationPrincipal MyUser user,@RequestBody @Valid ProfileDTO profileDTO){
-        Profile profile=profileService.getprofile(user.getId());
-        City city=cityService.getCity(profileDTO.getCityId());
-        if(profile==null||city==null||profile.getUser().getId()!=user.getId()){
-            return ResponseEntity.status(400).body("The Id error");
-        }
-
-        profile.setCity(city);
-        profile.setPhone(profileDTO.getPhone());
-        profileService.update(user,profile);
+        profileService.update(user,profileDTO);
         return ResponseEntity.status(200).body("Update Done");
     }
 
