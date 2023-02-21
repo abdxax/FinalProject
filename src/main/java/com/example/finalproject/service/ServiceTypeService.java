@@ -1,5 +1,6 @@
 package com.example.finalproject.service;
 
+import com.example.finalproject.handling.ApiException;
 import com.example.finalproject.model.MyUser;
 import com.example.finalproject.model.ServiceType;
 import com.example.finalproject.repestory.ServiceTypeRepository;
@@ -14,6 +15,14 @@ public class ServiceTypeService {
     private final ServiceTypeRepository serviceTypeRepository;
     public List<ServiceType> getAll(){
         return serviceTypeRepository.findAll();
+    }
+
+    public ServiceType getServiceType(Integer id){
+        ServiceType serviceType = serviceTypeRepository.findByIdEquals(id);
+        if(serviceType==null){
+            throw new ApiException("Service type not found",404);
+        }
+        return serviceType;
     }
     public void addService(MyUser user,ServiceType serviceType){
         if(!checkRole(user)){
