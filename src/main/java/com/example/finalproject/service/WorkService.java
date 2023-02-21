@@ -21,6 +21,20 @@ public class WorkService {
     private final ServiceDetailsRepository serviceDetailsRepository;
 
 
+    public List<Work> userWork(MyUser user){
+        return workRepository.findAllByUser(user);
+    }
+
+    public Work getWork(Integer id){
+        Work work= workRepository.findWorkById(id);
+        if(work==null){
+            throw new ApiException("Work not found",404);
+        }
+        return work;
+    }
+
+
+
     public void addWork(MyUser user, WorkDTO workDTO){
         MyUser authUser = authRepository.findByIdEquals(user.getId());
         if(authUser.getProfile()==null){
@@ -37,7 +51,33 @@ public class WorkService {
         workRepository.save(work);
     }
 
-    public List<Work> userWork(MyUser user){
-        return workRepository.findAllByUser(user);
+    public void updateWork(Integer id,MyUser user, WorkDTO workDTO) {
+        MyUser authUser = authRepository.findByIdEquals(user.getId());
+        Work work = getWork(id);
+        if(work.getUser().getId() != authUser.getId()){
+            throw new ApiException("You don't own this resource",403);
+        }
+
+        ServiceDetails serviceDetails = serviceDetailsRepository.findByIdEquals(workDTO.getServiceDetailId());
+        if(serviceDetails==null||serviceDetails.getUser().getId()!= authUser.getId()){
+            throw new ApiException("Service detail not found.",404);
+        }
+
+        work.setDescription(workDTO.getDescription());
+        work.setServiceDetails(serviceDetails);
+        work.setTitle(workDTO.getTitle());
+        workRepository.save(work);
     }
-}
+
+    public void deleteWork(Integer id,MyUser user) {
+        MyUser authUser = authRepository.findByIdEquals(user.getId());
+        Work work = workRepository.findWorkById(id);
+        if (work.getUser().getId() != authUser.getId()) {
+            throw new ApiException("You don't own this resource", 403);
+        }
+        workRepository.delete(work);
+
+    }
+
+
+    }

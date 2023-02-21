@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface WorkRepository extends JpaRepository<Work,Integer> {
     List<Work> findAllByUser(MyUser user);
+    Work findWorkById(Integer id);
 }

@@ -18,15 +18,56 @@ import java.util.List;
 public class ServiceDetailsService {
     private final ServiceDetailsRepository serviceDetailsRepository;
     private final AuthRepository authRepository;
-    private final ServiceTypeRepository serviceTypeRepository;
+    private final ServiceTypeService serviceTypeService;
 
     public List<ServiceDetails> serviceDetails(MyUser user){
       return serviceDetailsRepository.findByUser(user);
     }
 
+    public ServiceDetails getServiceDetail(Integer id){
+        ServiceDetails serviceDetails = serviceDetailsRepository.findByIdEquals(id);
+        if(serviceDetails==null){
+            throw new ApiException("Service detail not found",404);
+        }
+        return serviceDetails;
+
+
+    }
+
     public void addServiceDetails(MyUser user, ServiceDetailsDTO detailsDTO){
-        ServiceType serviceType=serviceTypeRepository.findByIdEquals(detailsDTO.getServiceTypeId());
+        ServiceType serviceType = serviceTypeService.getServiceType(detailsDTO.getServiceTypeId());
         MyUser authUser = authRepository.findByIdEquals(user.getId());
+        checkServiceTypeAttached(authUser,serviceType);
+
+        ServiceDetails serviceDetails =new ServiceDetails(null,detailsDTO.getDescription(),authUser,serviceType,null);
+        serviceDetailsRepository.save(serviceDetails);
+
+    }
+
+    public void update(Integer id, MyUser user, ServiceDetailsDTO serviceDetailsDTO){
+        ServiceDetails serviceDetail= getServiceDetail(id);
+        ServiceType serviceType = serviceTypeService.getServiceType(serviceDetailsDTO.getServiceTypeId());
+        MyUser authUser = authRepository.findByIdEquals(user.getId());
+
+        checkServiceTypeAttached(authUser,serviceType);
+
+        serviceDetail.setServiceType(serviceType);
+        serviceDetail.setDescription(serviceDetailsDTO.getDescription());
+        serviceDetailsRepository.save(serviceDetail);
+
+
+
+    }
+
+    public void delete(Integer id, MyUser user){
+        ServiceDetails serviceDetail = getServiceDetail(id);
+        if(serviceDetail.getUser().getId() != user.getId()){
+            throw new ApiException("You don't own this resource",403);
+        }
+        serviceDetailsRepository.delete(serviceDetail);
+    }
+
+    public void checkServiceTypeAttached(MyUser authUser, ServiceType serviceType){
         if(authUser.getProfile()==null){
             throw new ApiException("Profile not found. complete your profile first.",404);
         }
@@ -36,41 +77,8 @@ public class ServiceDetailsService {
         if(!authUser.getProfile().getFreelancer().getServiceTypeList().contains(serviceType)){
             throw new ApiException("You did not attach the service details provided!", 400);
         }
-        ServiceDetails serviceDetails =new ServiceDetails(null,detailsDTO.getDescription(),authUser,serviceType,null);
-        serviceDetailsRepository.save(serviceDetails);
 
     }
-
-    public Boolean update(Integer id, MyUser user, ServiceDetailsDTO serviceDetailsDTO){
-//        ServiceDetails s= serviceDetailsRepository.findByIdEquals(id);
-//
-//        MyUser u= authRepository.findByIdEquals(serviceDetailsDTO.getUserId());
-//        ServiceType serviceType=serviceTypeRepository.findByIdEquals(serviceDetailsDTO.getServiceTypeId());
-//
-//        if(s==null||u==null||serviceType==null||s.getUser().getId()!=user.getId()){
-//            return false;
-//        }
-//        s.setTitle(serviceDetailsDTO.getTitle());
-//        s.setDescription(serviceDetailsDTO.getDescription());
-//        serviceDetailsRepository.save(s);
-//
-        return  true;
-    }
-
-    public Boolean delete(Integer id, MyUser user){
-        ServiceDetails s= serviceDetailsRepository.findByIdEquals(id);
-
-
-
-        if(s==null||s.getUser().getId()!=user.getId()){
-            return false;
-        }
-
-        serviceDetailsRepository.delete(s);
-
-        return  true;
-    }
-
 
 
 

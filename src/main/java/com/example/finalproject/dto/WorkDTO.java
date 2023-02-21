@@ -12,7 +12,7 @@ public class WorkDTO {
     @Size(min = 3, max = 255,message = "Title must be between 3 to 255 characters")
     private String title;
     @NotNull(message = "Description can not be empty")
-    @Min(value = 10, message = "Description must contain at least 10 characters")
+    @Size(min = 10, message = "Description must contain at least 10 characters")
     private String description;
     @Positive(message = "service detail id must be positive integer")
     private Integer serviceDetailId;

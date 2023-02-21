@@ -25,24 +25,8 @@ public class ServiceDetails {
     @ManyToOne
     @JoinColumn(name = "serviceTypeId",referencedColumnName = "id")
     private ServiceType serviceType;
-   /* @OneToMany(cascade = CascadeType.ALL,mappedBy = "serviceDetalies")
-    private List<Storage> storages;
-
-    */
-    @OneToMany(cascade = CascadeType.ALL,mappedBy ="serviceDetails" )
+    @OneToMany(cascade = CascadeType.REMOVE ,mappedBy ="serviceDetails" )
     private List<Work> works;
-   /* @ManyToOne
-    @JoinColumn(name = "freelancerId",referencedColumnName = "id")
-    @JsonIgnore
-    private Freelancer freelancer;
-
-    */
-
-
-
-
-
-
 
 
 }
