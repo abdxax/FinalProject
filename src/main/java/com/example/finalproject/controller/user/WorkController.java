@@ -4,6 +4,7 @@ import com.example.finalproject.ApiResponse;
 import com.example.finalproject.dto.WorkDTO;
 import com.example.finalproject.model.MyUser;
 import com.example.finalproject.model.Work;
+import com.example.finalproject.service.StorageService;
 import com.example.finalproject.service.WorkService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,9 +21,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WorkController {
     private final WorkService workService;
+    private final StorageService storageService;
+
 
     @PostMapping()
     public ResponseEntity addWork(@AuthenticationPrincipal MyUser user, @RequestBody @Valid WorkDTO workDTO){
+
         workService.addWork(user,workDTO);
         return ResponseEntity.status(200).body("The work is added");
     }
