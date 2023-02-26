@@ -1,5 +1,6 @@
 package com.example.finalproject;
 
+import com.example.finalproject.config.FileUploadProperties;
 import com.example.finalproject.model.City;
 import com.example.finalproject.model.MyUser;
 import com.example.finalproject.model.ServiceType;
@@ -9,6 +10,7 @@ import com.example.finalproject.repestory.ServiceTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
@@ -19,6 +21,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 @SpringBootApplication
+@EnableConfigurationProperties({
+        FileUploadProperties.class
+})
 public class FinalProjectApplication {
 
     public static void main(String[] args) {
