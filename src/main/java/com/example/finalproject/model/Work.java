@@ -19,7 +19,7 @@ public class Work {
     private Integer id;
     private String title;
     private String description;
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "work")
+    @OneToMany(cascade = CascadeType.REMOVE,mappedBy = "work")
     private List<Storage> storageList;
     @ManyToOne
     @JoinColumn(name = "serviceDetailsId",referencedColumnName = "id")
