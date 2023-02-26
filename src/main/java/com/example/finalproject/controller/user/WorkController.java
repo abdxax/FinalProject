@@ -39,12 +39,12 @@ public class WorkController {
     @PutMapping("{id}")
     public ResponseEntity<ApiResponse> updateWork(@PathVariable Integer id,@AuthenticationPrincipal MyUser user, @RequestBody @Valid WorkDTO workDTO){
         workService.updateWork(id,user,workDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Updated successfully"));
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Updated successfully",user));
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<ApiResponse> deleteWork(@AuthenticationPrincipal MyUser user, @PathVariable Integer id){
         workService.deleteWork(id,user);
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Work deleted successfully"));
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Work deleted successfully",user));
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("api/v1/user/storage")
 //@RequiredArgsConstructor
 public class StorageController {
+
     @Autowired
     private StorageService storageService;
     @PostMapping("/upload/{workId}")
@@ -27,5 +28,6 @@ public class StorageController {
     public ResponseEntity getFile(@RequestParam("path") String path, @AuthenticationPrincipal MyUser user){
         Resource resource = storageService.loadFile(path);
         return ResponseEntity.status(200).body(resource);
+
     }
 }

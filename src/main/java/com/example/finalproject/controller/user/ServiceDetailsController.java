@@ -25,7 +25,7 @@ public class ServiceDetailsController {
     @PostMapping()
     public ResponseEntity addServiceDetails(@AuthenticationPrincipal MyUser user, @RequestBody @Valid ServiceDetailsDTO serviceDetailsDTO){
         serviceDetailsService.addServiceDetails(user,serviceDetailsDTO);
-        return ResponseEntity.status(200).body(new ApiResponse("Service details added"));
+        return ResponseEntity.status(200).body(new ApiResponse("Service details added",user));
     }
     @GetMapping()
     public ResponseEntity<List<ServiceDetails>> getServiceDetails(@AuthenticationPrincipal MyUser user){
@@ -36,12 +36,12 @@ public class ServiceDetailsController {
     @PutMapping("{id}")
     public ResponseEntity<ApiResponse> updateServiceDetail(@AuthenticationPrincipal MyUser user, @PathVariable Integer id, @RequestBody ServiceDetailsDTO serviceDetailsDTO){
         serviceDetailsService.update(id,user,serviceDetailsDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Updated successfully"));
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Updated successfully",user));
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<ApiResponse> deleteServiceDetail(@AuthenticationPrincipal MyUser user, @PathVariable Integer id){
         serviceDetailsService.delete(id,user);
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Deleted successfully"));
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Deleted successfully",user));
     }
 }
