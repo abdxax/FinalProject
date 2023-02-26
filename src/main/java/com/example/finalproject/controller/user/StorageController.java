@@ -21,7 +21,7 @@ public class StorageController {
     @PostMapping("/upload/{workId}")
     public ResponseEntity<ApiResponse> uploadFile(@AuthenticationPrincipal MyUser user, @RequestParam("file") MultipartFile multipartFile, @PathVariable Integer workId){
         storageService.saveWorkFile(multipartFile,workId,user);
-        return ResponseEntity.status(200).body(new ApiResponse("Uploaded successfully"));
+        return ResponseEntity.status(200).body(new ApiResponse("Uploaded successfully",user));
     }
 
     @GetMapping("")
