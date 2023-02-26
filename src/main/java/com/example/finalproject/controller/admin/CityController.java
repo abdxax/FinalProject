@@ -3,6 +3,7 @@ package com.example.finalproject.controller.admin;
 import com.example.finalproject.model.City;
 import com.example.finalproject.model.MyUser;
 import com.example.finalproject.service.CityService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +17,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CityController {
     private final CityService cityService;
+    //@RolesAllowed({ "ADMIN" })
     @GetMapping("/getAll")
-    public ResponseEntity<List<City>> getAll(@AuthenticationPrincipal MyUser user){
+    @RolesAllowed("ADMIN")
+    public ResponseEntity<List<City>> getAll( ){
         return ResponseEntity.status(200).body(cityService.getCites());
     }
 
@@ -41,5 +44,14 @@ public class CityController {
             return ResponseEntity.status(200).body("has error in something");
         }
         return ResponseEntity.status(200).body("Done Delete");
+    }
+
+    @GetMapping("/getCity/{id}")
+    public ResponseEntity getCity(@PathVariable Integer id){
+        City city=cityService.getCity(id);
+        if(city==null){
+            return ResponseEntity.status(400).body("Error City CODE");
+        }
+        return ResponseEntity.status(200).body(city);
     }
 }

@@ -20,6 +20,6 @@ public class StorageController {
     @PostMapping("/uploadFile")
     public ResponseEntity<ApiResponse> uploadFile(@RequestParam Integer id,@RequestParam String types ,@AuthenticationPrincipal MyUser user, @RequestParam MultipartFile multipartFile){
      String file= storageService.storeFile(storageService.convertMultiPartFileToFile(multipartFile),id,types,user);
-     return ResponseEntity.status(200).body(new ApiResponse(file));
+     return ResponseEntity.status(200).body(new ApiResponse(file,user));
     }
 }

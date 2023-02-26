@@ -1,5 +1,6 @@
 package com.example.finalproject;
 
+import com.example.finalproject.model.MyUser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -7,4 +8,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class ApiResponse {
     private String message;
+    private MyUser user=null;
 }
