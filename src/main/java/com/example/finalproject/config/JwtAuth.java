@@ -50,6 +50,10 @@ public class JwtAuth extends OncePerRequestFilter {
                 );
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
+            else{
+                System.out.println("sss");
+
+            }
         }
 
         filterChain.doFilter(request,response);
