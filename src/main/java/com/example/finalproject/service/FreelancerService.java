@@ -1,15 +1,14 @@
 package com.example.finalproject.service;
 
 import com.example.finalproject.dto.FreelancerDTO;
+import com.example.finalproject.dto.FreelancerWithService;
 import com.example.finalproject.handling.ApiException;
 import com.example.finalproject.model.*;
-import com.example.finalproject.repestory.AuthRepository;
-import com.example.finalproject.repestory.FreelancerRepostioty;
-import com.example.finalproject.repestory.ProfileRepository;
-import com.example.finalproject.repestory.ServiceTypeRepository;
+import com.example.finalproject.repestory.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,6 +17,7 @@ public class FreelancerService {
     private final FreelancerRepostioty freelancerRepostioty;
     private final ProfileRepository profileRepository;
     private final ServiceTypeRepository serviceTypeRepository;
+    private final ServiceDetailsRepository detailsRepository;
     private final AuthRepository authRepository;
     public void addFreelancer(MyUser user, FreelancerDTO freelancerDTO){
         Profile profile=profileRepository.findByIdEquals(user.getId());
@@ -65,6 +65,48 @@ public class FreelancerService {
             throw new ApiException("Freelancer information not found. complete it.",404);
         }
         return f;
+
+    }
+
+    public void addFreelancerWithServoce(FreelancerWithService freelancer,MyUser user){
+        ServiceType serviceType=serviceTypeRepository.findByIdEquals(freelancer.getServiceTypeId());
+        Profile profile=profileRepository.findByIdEquals(user.getId());
+        Freelancer freelanc=freelancerRepostioty.findByProfile(profile);
+        if(serviceType==null){
+          throw new ApiException("Error id ",400);
+        }
+        List<ServiceType> serviceTypeList;
+       // int size=user.getProfile().getFreelancer().getServiceTypeList().size();
+        if(user.getProfile().getFreelancer()==null){
+            serviceTypeList=new ArrayList<>();
+            serviceTypeList.add(serviceType);
+        }
+        else{
+            serviceTypeList =profile.getFreelancer().getServiceTypeList();
+            serviceTypeList.add(serviceType);
+        }
+
+        if(freelanc==null){
+             freelanc=new Freelancer(null,freelancer.getCapacity(),serviceTypeList,profile);
+        }
+        else{
+            freelanc.setServiceTypeList(serviceTypeList);
+        }
+
+        freelancerRepostioty.save(freelanc);
+
+        serviceType.getFreelancer().add(freelanc);
+        serviceTypeRepository.save(serviceType);
+
+        ServiceDetails serviceDetails=new ServiceDetails(null,freelancer.getDescription(),user,serviceType,null);
+        detailsRepository.save(serviceDetails);
+
+        MyUser myUser = authRepository.findByIdEquals(user.getId());
+        if(myUser.getRole().equals("USER")){
+            myUser.setRole("FREELANCER");
+            authRepository.save(myUser);
+        }
+
 
     }
 }

@@ -19,6 +19,7 @@ public class ServiceDetailsService {
     private final ServiceDetailsRepository serviceDetailsRepository;
     private final AuthRepository authRepository;
     private final ServiceTypeService serviceTypeService;
+    private final ServiceTypeRepository serviceTypeRepository;
 
     public List<ServiceDetails> serviceDetails(MyUser user){
       return serviceDetailsRepository.findByUser(user);
@@ -81,5 +82,12 @@ public class ServiceDetailsService {
     }
 
 
+    public List<ServiceDetails> serviceDetailsByType(Integer id) {
+        ServiceType serviceType=serviceTypeRepository.findByIdEquals(id);
+        if(serviceType==null){
+            throw new ApiException("Error id",400);
+        }
 
+        return serviceDetailsRepository.findByserviceType(serviceType);
+    }
 }

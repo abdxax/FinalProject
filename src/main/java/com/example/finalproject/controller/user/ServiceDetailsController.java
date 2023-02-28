@@ -4,8 +4,10 @@ import com.example.finalproject.ApiResponse;
 import com.example.finalproject.dto.ServiceDetailsDTO;
 import com.example.finalproject.model.MyUser;
 import com.example.finalproject.model.ServiceDetails;
+import com.example.finalproject.model.ServiceType;
 import com.example.finalproject.model.Work;
 import com.example.finalproject.service.ServiceDetailsService;
+import com.example.finalproject.service.ServiceTypeService;
 import com.example.finalproject.service.WorkService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ServiceDetailsController {
     private final ServiceDetailsService serviceDetailsService;
+    private  final ServiceTypeService serviceTypeService;
 
     @PostMapping()
     public ResponseEntity addServiceDetails(@AuthenticationPrincipal MyUser user, @RequestBody @Valid ServiceDetailsDTO serviceDetailsDTO){
@@ -43,5 +46,13 @@ public class ServiceDetailsController {
     public ResponseEntity<ApiResponse> deleteServiceDetail(@AuthenticationPrincipal MyUser user, @PathVariable Integer id){
         serviceDetailsService.delete(id,user);
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Deleted successfully",user));
+    }
+    @GetMapping("/getServiceType")
+    public ResponseEntity<List<ServiceType>> getType(@AuthenticationPrincipal MyUser user){
+        return ResponseEntity.status(200).body(serviceTypeService.getAll());
+    }
+    @GetMapping("/getServiceByType/{id}")
+    public ResponseEntity<List<ServiceDetails>> getServiceD(@PathVariable Integer id,@AuthenticationPrincipal MyUser user){
+        return ResponseEntity.status(200).body(serviceDetailsService.serviceDetailsByType(id));
     }
 }

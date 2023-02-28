@@ -18,4 +18,5 @@ public class FreelancerDTO {
 
     @NotNull(message = "Service types must be selected")
     private List<Integer> serviceTypeList;
+
 }
