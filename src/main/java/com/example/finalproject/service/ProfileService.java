@@ -1,6 +1,8 @@
 package com.example.finalproject.service;
 
+import com.example.finalproject.dto.ApiProfile;
 import com.example.finalproject.dto.ProfileDTO;
+import com.example.finalproject.dto.UpdateProfileDTO;
 import com.example.finalproject.handling.ApiException;
 import com.example.finalproject.model.City;
 import com.example.finalproject.model.MyUser;
@@ -12,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
@@ -19,12 +23,16 @@ public class ProfileService {
     private final CityRepsotery cityRepsotery;
     private final AuthRepository authRepository;
 
-     public Profile getprofile(Integer id){
+     public ApiProfile getprofile(Integer id){
          Profile profile=profileRepository.findByIdEquals(id);
          if(profile==null){
              throw new ApiException("Profile not fount. complete your profile.",404);
          }
-         return profile;
+         MyUser user=authRepository.findByIdEquals(profile.getId());
+         if(user==null){
+             throw new ApiException("Profile not fount. complete your profile.",404);
+         }
+         return new ApiProfile(profile,user);
      }
 
      public void addProfile(MyUser user,ProfileDTO profileDTO){
@@ -67,5 +75,24 @@ public class ProfileService {
         }
         profileRepository.delete(prof);
         return true;
+    }
+
+    public List<City> cityList(){
+         return cityRepsotery.findAll();
+    }
+
+    public Boolean updateInfo(UpdateProfileDTO updateProfileDTO){
+         MyUser user=authRepository.findByIdEquals(updateProfileDTO.getUserId());
+         Profile profile=profileRepository.findByIdEquals(updateProfileDTO.getUserId());
+         City city=cityRepsotery.findByIdEquals(updateProfileDTO.getCityId());
+         if(user==null||profile==null||city==null){
+             return false;
+         }
+         user.setName(updateProfileDTO.getName());
+         authRepository.save(user);
+         profile.setCity(city);
+         profile.setPhone(updateProfileDTO.getPhone());
+         profileRepository.save(profile);
+         return true;
     }
 }

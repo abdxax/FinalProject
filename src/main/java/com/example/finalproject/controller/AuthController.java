@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final MyUserService myUserService;
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid MyUser user){
+    public ResponseEntity<ApiResponse> register(@RequestBody @Valid MyUser user){
         myUserService.register(user);
-        return ResponseEntity.status(200).body("Register is done");
+        return ResponseEntity.status(200).body(new ApiResponse("Register done",user));
     }
     @PostMapping("/login")
     public ResponseEntity<ApiResponse> login(@RequestBody @Valid LoginDTO loginDTO){
