@@ -1,5 +1,6 @@
 package com.example.finalproject.controller.admin;
 
+import com.example.finalproject.ApiResponse;
 import com.example.finalproject.model.City;
 import com.example.finalproject.model.MyUser;
 import com.example.finalproject.service.CityService;
@@ -25,9 +26,9 @@ public class CityController {
     }
 
     @PostMapping("/addCity")
-    public ResponseEntity addCity(@AuthenticationPrincipal MyUser user,@RequestBody @Valid City city){
+    public ResponseEntity<ApiResponse> addCity(@AuthenticationPrincipal MyUser user, @RequestBody @Valid City city){
         cityService.addCity(user,city);
-       return ResponseEntity.status(200).body("Added Done ");
+       return ResponseEntity.status(200).body(new ApiResponse("Added Done",user));
     }
     @PutMapping("/update/{id}")
     public ResponseEntity update(@PathVariable Integer id,@AuthenticationPrincipal MyUser user,@RequestBody @Valid City city){

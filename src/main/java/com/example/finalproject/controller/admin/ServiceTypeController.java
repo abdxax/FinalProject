@@ -3,6 +3,7 @@ package com.example.finalproject.controller.admin;
 import com.example.finalproject.model.MyUser;
 import com.example.finalproject.model.ServiceType;
 import com.example.finalproject.service.ServiceTypeService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.List;
 public class ServiceTypeController {
     private final ServiceTypeService serviceTypeService;
     @GetMapping("/getAll")
+    @RolesAllowed("ADMIN")
     public ResponseEntity<List<ServiceType>> getAll(@AuthenticationPrincipal MyUser user){
         return ResponseEntity.status(200).body(serviceTypeService.getAll());
     }
