@@ -35,7 +35,7 @@ public class FreelancerService {
         }
         List<ServiceType> serviceTypeList = serviceTypeRepository.findAllById(freelancerDTO.getServiceTypeList());
 
-        Freelancer freelancer=new Freelancer(null,freelancerDTO.getCapacity(),serviceTypeList,profile);
+        Freelancer freelancer=new Freelancer(null,freelancerDTO.getCapacity(),freelancerDTO.getMessage(),serviceTypeList,profile);
         freelancerRepostioty.save(freelancer);
         for (ServiceType s: serviceTypeList){
             s.getFreelancer().add(freelancer);
@@ -53,6 +53,7 @@ public class FreelancerService {
         List<ServiceType> serviceTypeList = serviceTypeRepository.findAllById(freelancer.getServiceTypeList());
 
         oldFreelancer.setCapacity(freelancer.getCapacity());
+        oldFreelancer.setMessage(freelancer.getMessage());
         oldFreelancer.setServiceTypeList(serviceTypeList);
         freelancerRepostioty.save(oldFreelancer);
 
@@ -87,7 +88,7 @@ public class FreelancerService {
         }
 
         if(freelanc==null){
-             freelanc=new Freelancer(null,freelancer.getCapacity(),serviceTypeList,profile);
+             freelanc=new Freelancer(null,freelancer.getCapacity(), freelancer.getMessage(),serviceTypeList,profile);
         }
         else{
             freelanc.setServiceTypeList(serviceTypeList);

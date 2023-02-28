@@ -8,6 +8,7 @@ import com.example.finalproject.model.City;
 import com.example.finalproject.model.MyUser;
 import com.example.finalproject.model.Profile;
 import com.example.finalproject.service.CityService;
+import com.example.finalproject.service.MyUserService;
 import com.example.finalproject.service.ProfileService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
@@ -22,16 +23,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ProfileController {
     private final ProfileService profileService;
+    private final MyUserService myUserService;
     //private final Us
     private final CityService cityService;
     @GetMapping("/getProfile")
 
     public ResponseEntity<ApiProfile> getProfile(@AuthenticationPrincipal MyUser user){
-        if(user.getProfile()==null){
-            return ResponseEntity.status(400).body(null);
-        }
-
-        return ResponseEntity.status(200).body(profileService.getprofile(user.getId()));
+        ApiProfile profile = profileService.getprofile(user.getId());
+        return ResponseEntity.status(200).body(profile);
     }
     @PostMapping("/addprofile")
     public ResponseEntity addProfile(@AuthenticationPrincipal MyUser user,@RequestBody @Valid ProfileDTO profileDTO){

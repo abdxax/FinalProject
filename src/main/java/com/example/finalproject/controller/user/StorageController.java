@@ -30,4 +30,13 @@ public class StorageController {
         return ResponseEntity.status(200).body(resource);
 
     }
+
+    @GetMapping("{id}")
+    public ResponseEntity getFileById(@PathVariable Integer id, @AuthenticationPrincipal MyUser user){
+        Resource resource = storageService.loadFileById(id);
+        return ResponseEntity.status(200).body(resource);
+
+    }
+
+
 }

@@ -2,6 +2,7 @@ package com.example.finalproject.service;
 
 import com.example.finalproject.ApiResponse;
 import com.example.finalproject.dto.LoginDTO;
+import com.example.finalproject.handling.ApiException;
 import com.example.finalproject.model.MyUser;
 import com.example.finalproject.repestory.AuthRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class MyUserService {
     public ApiResponse register(MyUser user){
         String password=new BCryptPasswordEncoder().encode(user.getPassword());
         user.setPassword(password);
+        user.setRole("USER");
         authRepository.save(user);
         String token = jwtService.generatToken(user);
         return new ApiResponse(token,user);
@@ -42,5 +44,13 @@ public class MyUserService {
         String token= jwtService.generatToken(user);
         return new ApiResponse(token,user);
         //return ApiResponse.builder()
+    }
+
+    public MyUser getUser(Integer id) {
+        MyUser user = authRepository.findByIdEquals(id);
+        if(user==null){
+            throw new ApiException("User not found",404);
+        }
+        return user;
     }
 }
