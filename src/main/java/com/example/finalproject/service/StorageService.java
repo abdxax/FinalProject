@@ -129,6 +129,28 @@ public class StorageService implements StorageInterface {
             saveFile(files[i],user);
         }
     }
+
+    public Resource loadFileById(Integer id) {
+        Storage storage = storageRepository.findById(id).get();
+        if(storage==null){
+            throw new ApiException("File not found",404);
+        }
+        try {
+            String path = storage.getFilePath();
+            Path file = Path.of(path).toAbsolutePath().normalize();
+            Resource resource = new UrlResource(file.toUri());
+
+            if (resource.exists() || resource.isReadable()) {
+                return resource;
+            }
+            else {
+                throw new ApiException("Could not find file",404);
+            }
+        }
+        catch (MalformedURLException e) {
+            throw new ApiException("Could not download file",500);
+        }
+    }
 //
 //    private Path fileStorageLocation;
 //    private final WorkRepository workRepository;

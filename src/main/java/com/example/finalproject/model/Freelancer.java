@@ -19,8 +19,10 @@ public class Freelancer {
      private Integer id;
     private Integer capacity;
 
+    private String message;
     @ManyToMany(mappedBy = "freelancer")
     private List<ServiceType> serviceTypeList;
+
     @OneToOne
     @MapsId
     @JsonIgnore

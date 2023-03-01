@@ -36,6 +36,12 @@ public class WorkController {
         return ResponseEntity.status(200).body(works);
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<Work> getWorkById(@PathVariable Integer id){
+        Work work = workService.getWork(id);
+        return ResponseEntity.status(200).body(work);
+    }
+
     @PutMapping("{id}")
     public ResponseEntity<ApiResponse> updateWork(@PathVariable Integer id,@AuthenticationPrincipal MyUser user, @RequestBody @Valid WorkDTO workDTO){
         workService.updateWork(id,user,workDTO);
