@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StorageRepository extends JpaRepository<Storage,Integer> {
 
+    Storage findStorageById(Integer id);
 }

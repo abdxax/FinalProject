@@ -1,18 +1,15 @@
 package com.example.finalproject.controller.user;
 
-import com.example.finalproject.ApiResponse;
+import com.example.finalproject.ApiResponseWithUser;
 import com.example.finalproject.dto.FreelancerDTO;
 import com.example.finalproject.dto.FreelancerWithService;
-import com.example.finalproject.handling.ApiException;
 import com.example.finalproject.model.Freelancer;
 import com.example.finalproject.model.MyUser;
-import com.example.finalproject.repestory.FreelancerRepostioty;
 import com.example.finalproject.service.FreelancerService;
 import com.example.finalproject.service.ProfileService;
 import com.example.finalproject.service.ServiceDetailsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -45,9 +42,9 @@ public class FreelancerController {
       return ResponseEntity.status(200).body("Update done");
     }
 @PostMapping("/addFreelancerWithService")
-    public ResponseEntity<ApiResponse> addResp(@AuthenticationPrincipal MyUser user, @RequestBody @Valid FreelancerWithService freelancer){
+    public ResponseEntity<ApiResponseWithUser> addResp(@AuthenticationPrincipal MyUser user, @RequestBody @Valid FreelancerWithService freelancer){
          freelancerService.addFreelancerWithServoce(freelancer,user);
-         return ResponseEntity.status(200).body(new ApiResponse("Done",user));
+         return ResponseEntity.status(200).body(new ApiResponseWithUser("Done",user));
     }
 
 

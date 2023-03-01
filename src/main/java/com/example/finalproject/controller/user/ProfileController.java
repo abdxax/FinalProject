@@ -1,20 +1,16 @@
 package com.example.finalproject.controller.user;
 
-import com.example.finalproject.ApiResponse;
+import com.example.finalproject.ApiResponseWithUser;
 import com.example.finalproject.dto.ApiProfile;
 import com.example.finalproject.dto.ProfileDTO;
 import com.example.finalproject.dto.UpdateProfileDTO;
-import com.example.finalproject.model.City;
 import com.example.finalproject.model.MyUser;
-import com.example.finalproject.model.Profile;
 import com.example.finalproject.service.CityService;
 import com.example.finalproject.service.MyUserService;
 import com.example.finalproject.service.ProfileService;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,12 +43,12 @@ public class ProfileController {
         return ResponseEntity.status(200).body(profileService.cityList());
     }
 @PutMapping("/updateInfo")
-    public ResponseEntity<ApiResponse> updateFullprofile(@AuthenticationPrincipal MyUser user,@RequestBody @Valid UpdateProfileDTO updateProfileDTO){
+    public ResponseEntity<ApiResponseWithUser> updateFullprofile(@AuthenticationPrincipal MyUser user, @RequestBody @Valid UpdateProfileDTO updateProfileDTO){
         Boolean resu=profileService.updateInfo(updateProfileDTO);
         if(!resu){
-            return ResponseEntity.status(400).body(new ApiResponse("Error",user));
+            return ResponseEntity.status(400).body(new ApiResponseWithUser("Error",user));
         }
-        return ResponseEntity.status(200).body(new ApiResponse("Update Done",user));
+        return ResponseEntity.status(200).body(new ApiResponseWithUser("Update Done",user));
     }
 
 

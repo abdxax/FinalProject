@@ -1,6 +1,6 @@
 package com.example.finalproject.service;
 
-import com.example.finalproject.ApiResponse;
+import com.example.finalproject.ApiResponseWithUser;
 import com.example.finalproject.dto.LoginDTO;
 import com.example.finalproject.handling.ApiException;
 import com.example.finalproject.model.MyUser;
@@ -19,17 +19,17 @@ public class MyUserService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService ;
 
-    public ApiResponse register(MyUser user){
+    public ApiResponseWithUser register(MyUser user){
         String password=new BCryptPasswordEncoder().encode(user.getPassword());
         user.setPassword(password);
         user.setRole("USER");
         authRepository.save(user);
         String token = jwtService.generatToken(user);
-        return new ApiResponse(token,user);
+        return new ApiResponseWithUser(token,user);
 
     }
 
-    public ApiResponse login(LoginDTO loginDTO){
+    public ApiResponseWithUser login(LoginDTO loginDTO){
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDTO.getEmail(),
@@ -38,12 +38,12 @@ public class MyUserService {
         );
         MyUser user=authRepository.findByEmail(loginDTO.getEmail());
         if(user==null){
-            return new ApiResponse("The user name or password is not correct ",null);
+            return new ApiResponseWithUser("The user name or password is not correct ",null);
         }
 
         String token= jwtService.generatToken(user);
-        return new ApiResponse(token,user);
-        //return ApiResponse.builder()
+        return new ApiResponseWithUser(token,user);
+        //return ApiResponseWithUser.builder()
     }
 
     public MyUser getUser(Integer id) {

@@ -3,8 +3,10 @@ package com.example.finalproject.service;
 import com.example.finalproject.config.FileUploadProperties;
 import com.example.finalproject.handling.ApiException;
 import com.example.finalproject.model.MyUser;
+import com.example.finalproject.model.Project;
 import com.example.finalproject.model.Storage;
 import com.example.finalproject.model.Work;
+import com.example.finalproject.repestory.ProjectRepository;
 import com.example.finalproject.repestory.StorageRepository;
 import com.example.finalproject.repestory.WorkRepository;
 import com.example.finalproject.uploadingfiles.StorageInterface;
@@ -16,11 +18,13 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 
 //import static org.hibernate.id.enhanced.HiLoOptimizer.log;
 
@@ -28,15 +32,17 @@ import java.nio.file.StandardCopyOption;
 @RequiredArgsConstructor
 public class StorageService implements StorageInterface {
 
-    private final Path dirLocation;
-    private final WorkRepository workRepository;
+    private Path dirLocation;
+    private WorkRepository workRepository;
+    private ProjectRepository projectRepository;
 
     private StorageRepository storageRepository;
     @Autowired
-    public StorageService(FileUploadProperties fileUploadProperties, WorkRepository workRepository, StorageRepository storageRepository) {
+    public StorageService(FileUploadProperties fileUploadProperties, WorkRepository workRepository, ProjectRepository projectRepository, StorageRepository storageRepository) {
         this.dirLocation = Paths.get(fileUploadProperties.getLocation())
                 .normalize();
         this.workRepository = workRepository;
+        this.projectRepository = projectRepository;
         this.storageRepository = storageRepository;
     }
 
@@ -124,16 +130,16 @@ public class StorageService implements StorageInterface {
         }
     }
 
-    public void saveMultiFile(MultipartFile[] files, MyUser user) {
-        for (int i=0; i<files.length;i++){
-            saveFile(files[i],user);
-        }
-    }
 
-    public Resource loadFileById(Integer id) {
-        Storage storage = storageRepository.findById(id).get();
+    public Resource loadFileById(Integer id,Integer userId) {
+        Storage storage = storageRepository.findStorageById(id);
         if(storage==null){
             throw new ApiException("File not found",404);
+        }
+        if(storage.getProject()!=null){
+            if(!Objects.equals(storage.getProject().getFreelancerId(), userId) && !Objects.equals(storage.getProject().getCustomerId(), userId)){
+                throw new ApiException("File not found",404);
+            }
         }
         try {
             String path = storage.getFilePath();
@@ -151,6 +157,71 @@ public class StorageService implements StorageInterface {
             throw new ApiException("Could not download file",500);
         }
     }
+
+    public String saveProjectFile(MultipartFile file, Integer projectId, MyUser user) {
+        Project project = projectRepository.findByIdEquals(projectId);
+        if(project==null){
+            throw new ApiException("Project not found",404);
+        }
+        if(project.getFreelancerId()!=user.getId()&&project.getCustomerId()!=user.getId()){
+            throw new ApiException("Project not found",404);
+        }
+        try {
+            if(Files.notExists(this.dirLocation.resolve("user-"+project.getCustomerId()))){
+                Files.createDirectories(this.dirLocation.resolve("user-"+project.getCustomerId()));
+            }
+            if(Files.notExists(this.dirLocation.resolve("user-"+project.getCustomerId()).resolve("projects"))){
+                Files.createDirectories(this.dirLocation.resolve("user-"+project.getCustomerId()).resolve("projects"));
+            }
+            if(Files.notExists(this.dirLocation.resolve("user-"+project.getCustomerId()).resolve("projects").resolve("project-"+project.getId()))){
+                Files.createDirectories(this.dirLocation.resolve("user-"+project.getCustomerId()).resolve("projects").resolve("project-"+project.getId()));
+            }
+
+            String fileName = file.getOriginalFilename();
+            String path = this.dirLocation+"/user-"+project.getCustomerId()+"/projects/project-"+project.getId();
+            Path dfile = Path.of(path).resolve(System.currentTimeMillis()+("."+file.getContentType().split("/")[1]));
+            Path absolute = dfile.toAbsolutePath();
+            System.out.println(dfile);
+
+
+            Files.copy(file.getInputStream(), absolute,StandardCopyOption.REPLACE_EXISTING);
+
+            storageRepository.save(new Storage(null,file.getContentType(),dfile+"",null,project));
+            return fileName;
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ApiException("Could not upload file",400);
+        }
+    }
+
+    public void deleteStorage(Integer id, Integer userId){
+        Storage storage = storageRepository.findStorageById(id);
+        if(storage==null){
+            throw new ApiException("File not found",404);
+        }
+        if(storage.getProject()!=null){
+            if(!Objects.equals(storage.getProject().getFreelancerId(), userId) && !Objects.equals(storage.getProject().getCustomerId(), userId)){
+                throw new ApiException("File not found",404);
+            }
+        }
+        if(storage.getWork()!=null){
+            if(!Objects.equals(storage.getWork().getUser().getId(), userId)){
+                throw new ApiException("File not found",404);
+            }
+        }
+
+        String path = storage.getFilePath();
+        Path file = Path.of(path).toAbsolutePath().normalize();
+        try {
+            Files.deleteIfExists(file);
+            storageRepository.delete(storage);
+        } catch (IOException e) {
+            throw new ApiException("Something went wrong",500);
+        }
+    }
+
+
 //
 //    private Path fileStorageLocation;
 //    private final WorkRepository workRepository;

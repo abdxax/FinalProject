@@ -1,6 +1,6 @@
 package com.example.finalproject.controller.user;
 
-import com.example.finalproject.ApiResponse;
+import com.example.finalproject.ApiResponseWithUser;
 import com.example.finalproject.dto.WorkDTO;
 import com.example.finalproject.model.MyUser;
 import com.example.finalproject.model.Work;
@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -43,14 +42,14 @@ public class WorkController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ApiResponse> updateWork(@PathVariable Integer id,@AuthenticationPrincipal MyUser user, @RequestBody @Valid WorkDTO workDTO){
+    public ResponseEntity<ApiResponseWithUser> updateWork(@PathVariable Integer id, @AuthenticationPrincipal MyUser user, @RequestBody @Valid WorkDTO workDTO){
         workService.updateWork(id,user,workDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Updated successfully",user));
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseWithUser("Updated successfully",user));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<ApiResponse> deleteWork(@AuthenticationPrincipal MyUser user, @PathVariable Integer id){
+    public ResponseEntity<ApiResponseWithUser> deleteWork(@AuthenticationPrincipal MyUser user, @PathVariable Integer id){
         workService.deleteWork(id,user);
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Work deleted successfully",user));
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseWithUser("Work deleted successfully",user));
     }
 }
