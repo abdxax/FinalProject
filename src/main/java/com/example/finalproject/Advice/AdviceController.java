@@ -7,6 +7,7 @@ import com.example.finalproject.ApiResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -29,6 +30,11 @@ public class AdviceController {
     public ResponseEntity<ApiResponse> myApi(ApiException e){
         return ResponseEntity.status(e.getStatus()).body(new ApiResponse(e.getMessage()));
     }
+    @ExceptionHandler(value = HttpMessageNotWritableException.class)
+    public void HttpMessageNotWritable(HttpMessageNotWritableException e){
+
+    }
+
 
     @ExceptionHandler(value = SQLIntegrityConstraintViolationException.class)
     public ResponseEntity dataIntegrityViolation(SQLIntegrityConstraintViolationException e){

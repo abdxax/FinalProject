@@ -1,5 +1,6 @@
 package com.example.finalproject.service;
 
+import com.example.finalproject.config.FileUploadProperties;
 import com.example.finalproject.dto.WorkDTO;
 import com.example.finalproject.handling.ApiException;
 import com.example.finalproject.model.MyUser;
@@ -12,6 +13,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -20,6 +27,7 @@ public class WorkService {
     private final WorkRepository workRepository;
     private final AuthRepository authRepository;
     private final ServiceDetailsRepository serviceDetailsRepository;
+    private final FileUploadProperties fileUploadProperties;
 
 //    private final StorageService storageService;
 
@@ -75,8 +83,25 @@ public class WorkService {
     public void deleteWork(Integer id,MyUser user) {
         MyUser authUser = authRepository.findByIdEquals(user.getId());
         Work work = workRepository.findWorkById(id);
+        if(work==null){
+            throw new ApiException("Work not found",404);
+        }
         if (work.getUser().getId() != authUser.getId()) {
             throw new ApiException("You don't own this resource", 403);
+        }
+        ;
+        if(Files.exists(Paths.get(fileUploadProperties.getLocation()).normalize().resolve("user-"+user.getId()).resolve("works").resolve("work-"+work.getId()))) {
+            try {
+                try (var dirStream = Files.walk(Paths.get(fileUploadProperties.getLocation()).normalize().resolve("user-" + user.getId()).resolve("works").resolve("work-" + work.getId()))) {
+                    dirStream
+                            .map(Path::toFile)
+                            .sorted(Comparator.reverseOrder())
+                            .forEach(File::delete);
+                }
+                ;
+            } catch (IOException e) {
+                throw new ApiException("Something went wrong", 500);
+            }
         }
         workRepository.delete(work);
 

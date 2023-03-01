@@ -33,7 +33,6 @@ public class Work {
      */
     @ManyToOne
     @JoinColumn(name = "userId",referencedColumnName = "id")
-    @JsonIgnore
     private MyUser user;
 
 

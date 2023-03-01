@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -17,15 +18,18 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final AuthRepository authRepository;
 
-    public void addProject(Integer userId,Project project){
+    public void addProject(Integer userId,Project project) {
         MyUser user = authRepository.findByIdEquals(userId);
-        if(user==null){
-            throw new ApiException("User not found",404);
+        if (user == null) {
+            throw new ApiException("User not found", 404);
         }
 
         MyUser freelancer = authRepository.findByIdEquals(project.getFreelancerId());
-        if(freelancer==null||freelancer.getProfile()==null||freelancer.getProfile().getFreelancer()==null){
-            throw new ApiException("Freelancer not found!",404);
+        if (freelancer == null || freelancer.getProfile() == null || freelancer.getProfile().getFreelancer() == null) {
+            throw new ApiException("Freelancer not found!", 404);
+        }
+        if (freelancer.getProfile().getFreelancer().getCapacity() == 0) {
+            throw new ApiException("Freelancer does not receive projects currently!", 400);
         }
         project.setCustomerId(userId);
         project.setCustomerApprove(false);
@@ -34,59 +38,29 @@ public class ProjectService {
         projectRepository.save(project);
     }
 
-    public Boolean updateApprovFreelancer(Integer id,Boolean approve,Integer freelancerId){
-        Project projec=projectRepository.findByIdEquals(id);
-        if(projec==null){
-            return false;
-        }
-        if(projec.getFreelancerId()!=freelancerId){
-            return  false;
-        }
-        projec.setFreelancerApprove(approve);
-        projectRepository.save(projec);
-        return true;
-    }
-
-    public Boolean updateApprovCustomer(Integer id,Boolean approve,Integer coustomerId){
-        Project projec=projectRepository.findByIdEquals(id);
-        if(projec==null){
-            return false;
-        }
-        if(projec.getCustomerId()!=coustomerId){
-            return  false;
-        }
-        projec.setCustomerApprove(approve);
-        projectRepository.save(projec);
-        return true;
-    }
-
-    public List<List<Project>> getProjects(Integer id) {
-        MyUser user = authRepository.findByIdEquals(id);
+    public List<List<Project>> getProjects(Integer userId) {
+        MyUser user = authRepository.findByIdEquals(userId);
         if(user==null){
             throw new ApiException("User not found",404);
         }
-//        if(user.getProfile()==null){
-//            throw new ApiException("Profile not found",404);
-//        }
-//        if(user.getProfile().getFreelancer()==null){
-//            throw new ApiException("You are not a freelancer",400);
-//        }
-        List<List<Project>> projects = new ArrayList<>();
 
-        projects.add(projectRepository.findAllByFreelancerId(id));
-        projects.add(projectRepository.findAllByCustomerId(id));
+        List<List<Project>> projects = new ArrayList<>();
+        projects.add(projectRepository.findAllByFreelancerId(userId));
+        projects.add(projectRepository.findAllByCustomerId(userId));
         return projects;
     }
 
-    public void acceptProject(Integer id, Integer projectId) {
+    public void acceptProject(Integer userId, Integer projectId) {
         Project project = projectRepository.findByIdEquals(projectId);
         if(project==null){
             throw new ApiException("Project not found",404);
         }
-        if(project.getFreelancerId()!= id){
+        if(!Objects.equals(project.getFreelancerId(), userId)){
             throw new ApiException("Project not found",404);
         }
-
+        if(project.getStatus()==2){
+            throw new ApiException("Project already canceled",400);
+        }
         project.setStatus(1);
         projectRepository.save(project);
     }
@@ -96,31 +70,96 @@ public class ProjectService {
         if(project==null){
             throw new ApiException("Project not found",404);
         }
-        if(project.getFreelancerId()!= id){
+        if(!Objects.equals(project.getFreelancerId(), id)){
             throw new ApiException("Project not found",404);
+        }
+        if(project.getStatus()==2){
+            throw new ApiException("Project already canceled",400);
         }
 
         project.setStatus(-1);
         projectRepository.save(project);
     }
 
-    public void approveCompletion(Integer id, Integer projectId){
+    public void approveCompletion(Integer userId, Integer projectId){
         Project project = projectRepository.findByIdEquals(projectId);
         if(project==null){
             throw new ApiException("Project not found",404);
         }
-        if(project.getFreelancerId() != id && project.getCustomerId()!=id){
+        if(!Objects.equals(project.getFreelancerId(), userId) && !Objects.equals(project.getCustomerId(), userId)){
             throw new ApiException("Project not found",404);
         }
-        if(project.getFreelancerId()==id){
+        if(project.getStatus()<=0){
+            throw new ApiException("Project not accepted by freelancer",400);
+        }
+        if(project.getStatus()==2){
+            throw new ApiException("Project already canceled",400);
+        }
+        if(Objects.equals(project.getFreelancerId(), userId)){
             project.setFreelancerApprove(true);
-        } else if (project.getCustomerId()==id) {
+        } else if (Objects.equals(project.getCustomerId(), userId)) {
             project.setCustomerApprove(true);
         }
         if(project.getCustomerApprove()&&project.getFreelancerApprove()){
             project.setStatus(4);
         }
 
+        projectRepository.save(project);
+
+    }
+
+    public void updateProject(Integer id, Project project, Integer userId) {
+        Project oldProject = projectRepository.findByIdEquals(id);
+        if(oldProject==null){
+            throw new ApiException("Project not found",404);
+        }
+        if(!Objects.equals(oldProject.getCustomerId(), userId)){
+            throw new ApiException("Project not found",404);
+        }
+        oldProject.setBudget(project.getBudget());
+        oldProject.setTitle(project.getTitle());
+        oldProject.setDescription(project.getDescription());
+        oldProject.setStart(project.getStart());
+        oldProject.setEnd(project.getEnd());
+        projectRepository.save(oldProject);
+    }
+
+    public void withdrawApproveCompletion(Integer userId, Integer projectId) {
+        Project project = projectRepository.findByIdEquals(projectId);
+        if(project==null){
+            throw new ApiException("Project not found",404);
+        }
+        if(!Objects.equals(project.getFreelancerId(), userId) && !Objects.equals(project.getCustomerId(), userId)){
+            throw new ApiException("Project not found",404);
+        }
+        if(project.getStatus()<=0){
+            throw new ApiException("Project not accepted by freelancer",400);
+        }
+        if(Objects.equals(project.getFreelancerId(), userId)){
+            project.setFreelancerApprove(false);
+        } else if (Objects.equals(project.getCustomerId(), userId)) {
+            project.setCustomerApprove(false);
+        }
+        if(project.getStatus()!=2) {
+            project.setStatus(3);
+        }
+
+        projectRepository.save(project);
+    }
+
+    public void cancelProject(Integer userId, Integer projectId) {
+        Project project = projectRepository.findByIdEquals(projectId);
+        if(project==null){
+            throw new ApiException("Project not found",404);
+        }
+        if(!Objects.equals(project.getCustomerId(), userId)){
+            throw new ApiException("Project not found",404);
+        }
+        if(project.getStatus()==4){
+            throw new ApiException("Project already completed",400);
+        }
+        project.setStatus(2);
+        project.setBudget(0.0);
         projectRepository.save(project);
 
     }

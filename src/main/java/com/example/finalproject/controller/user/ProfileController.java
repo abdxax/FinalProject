@@ -22,35 +22,36 @@ public class ProfileController {
     private final MyUserService myUserService;
     //private final Us
     private final CityService cityService;
+
     @GetMapping("/getProfile")
 
-    public ResponseEntity<ApiProfile> getProfile(@AuthenticationPrincipal MyUser user){
+    public ResponseEntity<ApiProfile> getProfile(@AuthenticationPrincipal MyUser user) {
         ApiProfile profile = profileService.getprofile(user.getId());
         return ResponseEntity.status(200).body(profile);
     }
+
     @PostMapping("/addprofile")
-    public ResponseEntity addProfile(@AuthenticationPrincipal MyUser user,@RequestBody @Valid ProfileDTO profileDTO){
-        profileService.addProfile(user,profileDTO);
+    public ResponseEntity addProfile(@AuthenticationPrincipal MyUser user, @RequestBody @Valid ProfileDTO profileDTO) {
+        profileService.addProfile(user, profileDTO);
         return ResponseEntity.status(200).body("The Profile Added done");
     }
-@PutMapping("/update")
-    public ResponseEntity update(@AuthenticationPrincipal MyUser user,@RequestBody @Valid ProfileDTO profileDTO){
-        profileService.update(user,profileDTO);
+
+    @PutMapping("/update")
+    public ResponseEntity update(@AuthenticationPrincipal MyUser user, @RequestBody @Valid ProfileDTO profileDTO) {
+        profileService.update(user, profileDTO);
         return ResponseEntity.status(200).body("Update Done");
     }
+
     @GetMapping("/getCity")
-    public ResponseEntity getCitys(){
+    public ResponseEntity getCitys() {
         return ResponseEntity.status(200).body(profileService.cityList());
     }
-@PutMapping("/updateInfo")
-    public ResponseEntity<ApiResponseWithUser> updateFullprofile(@AuthenticationPrincipal MyUser user, @RequestBody @Valid UpdateProfileDTO updateProfileDTO){
-        Boolean resu=profileService.updateInfo(updateProfileDTO);
-        if(!resu){
-            return ResponseEntity.status(400).body(new ApiResponseWithUser("Error",user));
-        }
-        return ResponseEntity.status(200).body(new ApiResponseWithUser("Update Done",user));
-    }
 
+    @PutMapping("/updateInfo")
+    public ResponseEntity<ApiResponseWithUser> updateFullprofile(@AuthenticationPrincipal MyUser user, @RequestBody @Valid UpdateProfileDTO updateProfileDTO) {
+        profileService.updateInfo(updateProfileDTO, user);
+        return ResponseEntity.status(200).body(new ApiResponseWithUser("Updated successfully", user));
+    }
 
 
 }

@@ -81,18 +81,21 @@ public class ProfileService {
          return cityRepsotery.findAll();
     }
 
-    public Boolean updateInfo(UpdateProfileDTO updateProfileDTO){
-         MyUser user=authRepository.findByIdEquals(updateProfileDTO.getUserId());
-         Profile profile=profileRepository.findByIdEquals(updateProfileDTO.getUserId());
+    public void updateInfo(UpdateProfileDTO updateProfileDTO, MyUser user){
+         MyUser oldUser=authRepository.findByIdEquals(user.getId());
+         Profile profile=profileRepository.findByIdEquals(user.getId());
          City city=cityRepsotery.findByIdEquals(updateProfileDTO.getCityId());
-         if(user==null||profile==null||city==null){
-             return false;
-         }
-         user.setName(updateProfileDTO.getName());
-         authRepository.save(user);
+         if(user==null){
+             throw new ApiException("User not found",404);
+         }if(profile==null){
+             throw new ApiException("Profile not found. Create one",404);
+        }if(city==null){
+            throw new ApiException("City not found",404);
+        }
+         oldUser.setName(updateProfileDTO.getName());
+         authRepository.save(oldUser);
          profile.setCity(city);
          profile.setPhone(updateProfileDTO.getPhone());
          profileRepository.save(profile);
-         return true;
     }
 }

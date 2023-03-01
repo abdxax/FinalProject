@@ -1,16 +1,16 @@
 package com.example.finalproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -24,12 +24,19 @@ public class MyUser implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @NotNull(message = "Name can not be null")
+    @Size(min = 3, max = 200, message = "Name must be between 3 and 200 characters")
     private String name;
-    @Email
+    @Email(message = "Email must be in email@examole.com form")
+    @NotNull(message = "Email can not be null")
     @Column(unique = true)
     private String email;
+
+    @NotNull(message = "Password can not be null")
+    @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters")
     private String password;
-    @Pattern(regexp = "ADMIN||FREELANCER||USER")
+
+    @Column(columnDefinition = "varchar(10) check(role='ADMIN' or role='USER' or role='FREELANCER')")
     private String role;
     /* @OneToOne(cascade = CascadeType.ALL,mappedBy = "user")
      @PrimaryKeyJoinColumn
@@ -40,6 +47,7 @@ public class MyUser implements UserDetails {
      */
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
+    @JsonIgnore
     private List<Work> works;
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
     private List<ServiceDetails> serviceDetails;

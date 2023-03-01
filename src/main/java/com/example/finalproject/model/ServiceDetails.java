@@ -26,6 +26,7 @@ public class ServiceDetails {
     @JoinColumn(name = "serviceTypeId",referencedColumnName = "id")
     private ServiceType serviceType;
     @OneToMany(cascade = CascadeType.REMOVE ,mappedBy ="serviceDetails" )
+    @JsonIgnore
     private List<Work> works;
 
 

@@ -50,15 +50,23 @@ public class FreelancerService {
             throw new ApiException("Freelancer information not found",404);
         }
 
+        for (ServiceType s: oldFreelancer.getServiceTypeList()){
+            s.getFreelancer().remove(oldFreelancer);
+            serviceTypeRepository.save(s);
+        }
         List<ServiceType> serviceTypeList = serviceTypeRepository.findAllById(freelancer.getServiceTypeList());
 
         oldFreelancer.setCapacity(freelancer.getCapacity());
         oldFreelancer.setMessage(freelancer.getMessage());
-        oldFreelancer.setServiceTypeList(serviceTypeList);
+        for (ServiceType s: serviceTypeList){
+            s.getFreelancer().add(oldFreelancer);
+            serviceTypeRepository.save(s);
+        }
         freelancerRepostioty.save(oldFreelancer);
 
         return true;
     }
+
 
     public Freelancer getFreelancer(Integer id){
         Freelancer f= freelancerRepostioty.findByIdEquals(id);
@@ -108,6 +116,15 @@ public class FreelancerService {
             authRepository.save(myUser);
         }
 
+
+    }
+
+    public List<Freelancer> getByServiceType(Integer serviceTypeId){
+        ServiceType serviceType = serviceTypeRepository.findByIdEquals(serviceTypeId);
+        if(serviceType==null){
+            throw new ApiException("Service type not found",404);
+        }
+        return freelancerRepostioty.findAllByServiceTypeListContains(serviceType);
 
     }
 }

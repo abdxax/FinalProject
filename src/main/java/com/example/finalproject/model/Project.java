@@ -2,10 +2,7 @@ package com.example.finalproject.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,8 +20,7 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Positive(message = "Freelancer id must be positive integer")
-    @NotNull(message = "Freelancer id can not be null")
+
     private Integer freelancerId;
     private  Integer customerId;
     @NotNull(message = "Title can not be null")
@@ -33,7 +29,7 @@ public class Project {
     @NotNull(message = "Description can not be null")
     @Size(min = 15, message = "Description can not be less than 15 characters")
     private String description;
-    @Positive(message = "Budget must be a positive integer")
+    @PositiveOrZero(message = "Budget must be a positive integer")
     private Double budget;
     @NotNull(message = "Start date can not be null")
     @Future(message = "Start date must be in future")
