@@ -83,6 +83,9 @@ public class StorageService implements StorageInterface {
         if(work==null){
             throw new ApiException("Work not found",404);
         }
+        if(!Objects.equals(work.getUser().getId(), user.getId())){
+            throw new ApiException("Work not found",404);
+        }
         try {
             if(Files.notExists(this.dirLocation.resolve("user-"+user.getId()))){
                 Files.createDirectories(this.dirLocation.resolve("user-"+user.getId()));
